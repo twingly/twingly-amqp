@@ -23,6 +23,8 @@ module Twingly
             publish(url)
             log("Pinged #{url}")
             cache!(url)
+
+            yield url if block_given?
           end
         end
       end
