@@ -25,7 +25,6 @@ pinger = Twingly::AMQP::Ping.new(
   source_ip:     "?.?.?.?",
   priority:      1,
   connection:    amqp_connection, # Optional, creates new AMQP::Connection otherwise
-  logger:        logger, # Optional
   url_cache:     url_cache, # Optional, see below
 )
 
