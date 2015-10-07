@@ -2,7 +2,8 @@ language: ruby
 sudo: false
 
 rvm:
-- 2.2
+  - 2.2
+
 cache: bundler
 
 notifications:
@@ -13,6 +14,6 @@ notifications:
     on_success: never
     on_failure: change
     template:
-    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}
-      (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}
+        (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
     format: html
