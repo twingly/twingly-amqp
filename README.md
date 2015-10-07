@@ -1,5 +1,7 @@
 # Twingly::Amqp
 
+[![Build Status](https://magnum.travis-ci.com/twingly/twingly-amqp.svg?token=qpeLsZ1ShGKXQVMsum51)](https://magnum.travis-ci.com/twingly/twingly-amqp)
+
 A gem for sending pings via RabbitMQ.
 
 ## Installation
@@ -22,7 +24,7 @@ pinger = Twingly::AMQP::Ping.new(
   queue_name:    "provider-ping",
   source_ip:     "?.?.?.?",
   priority:      1,
-  connection:    amqp_connection, # Optional, creates new AMQP::Connection otherwise 
+  connection:    amqp_connection, # Optional, creates new AMQP::Connection otherwise
   logger:        logger, # Optional
 )
 
