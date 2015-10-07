@@ -7,18 +7,28 @@ A gem for sending pings via RabbitMQ.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'twingly-amqp'
+gem "twingly-amqp", :git => "git@github.com:twingly/twingly-amqp.git"
 ```
 
 ## Usage
 
-```
-  options = { } # See twingly
-  pinger = Twingly::AMQP::Ping.new(options)
+```ruby
+amqp_connection = Twingly::AMQP::Connection(
+  hosts: # Optional, uses ENV[/RABBITMQ_\d+_HOST/] by default
+)
 
-  urls = [
-    "http://blog.twingly.com",
-  ]
+pinger = Twingly::AMQP::Ping.new(
+  provider_name: "a-provider-name",
+  queue_name:    "provider-ping",
+  source_ip:     "?.?.?.?",
+  priority:      1,
+  connection:    amqp_connection, # Optional, creates new AMQP::Connection otherwise 
+  logger:        logger, # Optional
+)
 
-  pinger.ping(urls)
+urls = [
+  "http://blog.twingly.com",
+]
+
+pinger.ping(urls)
 ```
