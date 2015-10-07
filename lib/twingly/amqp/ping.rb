@@ -4,7 +4,7 @@ require "json"
 module Twingly
   module AMQP
     class Ping
-      def initialize(provider_name:, queue_name:, source_ip:, priority:, connection:, logger: nil)
+      def initialize(provider_name:, queue_name:, source_ip:, priority:, connection: nil, logger: nil)
         @logger = logger
 
         @provider_name = provider_name
@@ -12,6 +12,7 @@ module Twingly
         @source_ip     = source_ip
         @priority      = priority
 
+        connection ||= Connection.new.connection
         @channel = connection.create_channel
       end
 
