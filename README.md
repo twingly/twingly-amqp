@@ -1,4 +1,4 @@
-# Twingly::Amqp
+# Twingly::AMQP
 
 [![Build Status](https://magnum.travis-ci.com/twingly/twingly-amqp.svg?token=qpeLsZ1ShGKXQVMsum51)](https://magnum.travis-ci.com/twingly/twingly-amqp)
 
