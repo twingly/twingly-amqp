@@ -52,12 +52,12 @@ module Twingly
         }
       end
 
-      def cached?
-        @url_cache.cached?
+      def cached?(url)
+        @url_cache.cached?(url)
       end
 
-      def cache!
-        @url_cache.cache!
+      def cache!(url)
+        @url_cache.cache!(url)
       end
 
       class NullCache
