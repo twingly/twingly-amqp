@@ -32,7 +32,9 @@ urls = [
   "http://blog.twingly.com",
 ]
 
-pinger.ping(urls)
+pinger.ping(urls) do |pinged_url|
+  # Optional block that gets called for each pinged url
+end
 ```
 
 ### Url cache
