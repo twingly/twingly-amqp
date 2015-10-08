@@ -4,8 +4,8 @@ require "json"
 module Twingly
   module AMQP
     class Ping
-      def initialize(provider_name:, queue_name:, source_ip:, priority:, connection: nil, logger: nil)
-        @logger = logger
+      def initialize(provider_name:, queue_name:, source_ip:, priority:, url_cache: NullCache, connection: nil)
+        @url_cache = url_cache
 
         @provider_name = provider_name
         @queue_name    = queue_name
@@ -17,17 +17,17 @@ module Twingly
       end
 
       def ping(urls)
-        urls.each do |url|
-          publish(url)
-          log("Pinged #{url}")
+        Array(urls).each do |url|
+          unless cached?(url)
+            publish(url)
+            cache!(url)
+
+            yield url if block_given?
+          end
         end
       end
 
       private
-
-      def log(msg)
-        @logger.info(msg) if @logger
-      end
 
       def publish(url)
         payload = message(url).to_json
@@ -50,6 +50,24 @@ module Twingly
           source_ip: @source_ip,
           url: url,
         }
+      end
+
+      def cached?
+        @url_cache.cached?
+      end
+
+      def cache!
+        @url_cache.cache!
+      end
+
+      class NullCache
+        def self.cached?(url)
+          false
+        end
+
+        def self.cache!(url)
+          # Do nothing
+        end
       end
     end
   end
