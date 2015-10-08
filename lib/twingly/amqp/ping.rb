@@ -17,7 +17,7 @@ module Twingly
       end
 
       def ping(urls)
-        urls.each do |url|
+        Array(urls).each do |url|
           unless cached?(url)
             publish(url)
             cache!(url)
