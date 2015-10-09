@@ -1,6 +1,7 @@
 # Twingly::AMQP
 
-[![Build Status](https://magnum.travis-ci.com/twingly/twingly-amqp.svg?token=qpeLsZ1ShGKXQVMsum51)](https://magnum.travis-ci.com/twingly/twingly-amqp)
+[![Build Status](https://travis-ci.org/twingly/twingly-amqp.svg?branch=master)](https://travis-ci.org/twingly/twingly-amqp)
+
 
 A gem for sending pings via RabbitMQ.
 
