@@ -32,6 +32,11 @@ subscription = Twingly::AMQP::Subscription.new(
   prefetch:         20, # Optional
   connection:       amqp_connection, # Optional, creates new AMQP::Connection if not set
 )
+
+subscription.subscribe do |payload|
+  # The payload is parsed JSON
+  puts payload[:some_key]
+end
 ```
 
 ### Ping urls
