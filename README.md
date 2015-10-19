@@ -25,9 +25,9 @@ amqp_connection = Twingly::AMQP::Connection(
 
 ```ruby
 subscription = Twingly::AMQP::Subscription.new(
-  queue_name:       "queue-to-subscribe-to",
-  exchange_topic:   "exchange-name-to-connect-queue-to",
-  routing_key:      "blog.url.#",
+  queue_name:       "crawler-urls",
+  exchange_topic:   "url-exchange",
+  routing_key:      "url.blog",
   consumer_threads: 4, # Optional
   prefetch:         20, # Optional
   connection:       amqp_connection, # Optional, creates new AMQP::Connection if not set
