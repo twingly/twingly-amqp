@@ -1,5 +1,3 @@
-require "raven"
-
 module Twingly
   module AMQP
     class Subscription
@@ -12,6 +10,9 @@ module Twingly
 
         connection ||= Connection.new.connection
         @channel = create_channel(connection)
+
+        @before_handle_message_callback = Proc.new {}
+        @on_exception_callback          = Proc.new {}
       end
 
       def subscribe(&block)
@@ -23,8 +24,7 @@ module Twingly
 
         consumer = queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
           begin
-            Raven::Context.clear!
-            Raven.extra_context(payload: payload)
+            @before_handle_message_callback.call(payload)
 
             handle_message_payload(payload, &block)
 
@@ -44,6 +44,14 @@ module Twingly
         consumer.cancel
       end
 
+      def before_handle_message(&block)
+        @before_handle_message_callback = block
+      end
+
+      def on_exception(&block)
+        @on_exception_callback = block
+      end
+
       private
 
       def create_channel(connection)
@@ -51,7 +59,7 @@ module Twingly
         channel.prefetch(@prefetch)
         channel.on_uncaught_exception do |exception, _|
           puts exception.message, exception.backtrace if development?
-          Raven.capture_exception(exception)
+          @on_exception_callback.call(exception)
         end
         channel
       end
