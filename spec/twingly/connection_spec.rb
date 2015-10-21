@@ -17,5 +17,14 @@ describe Twingly::AMQP::Connection do
         described_class.new(hosts: [ host ])
       end
     end
+
+    context "when AMQP_TLS is set" do
+      before { ENV["AMQP_TLS"] = "oh yeah" }
+      after  { ENV.delete("AMQP_TLS") }
+
+      it "should enable tls for bunny" do
+        expect { described_class.new }.to raise_error(Bunny::TCPConnectionFailedForAllHosts)
+      end
+    end
   end
 end
