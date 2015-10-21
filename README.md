@@ -15,6 +15,13 @@ gem "twingly-amqp", :git => "git@github.com:twingly/twingly-amqp.git"
 
 ## Usage
 
+Environment variables:
+
+* `RABBITMQ_N_HOST`
+* `AMQP_USERNAME`
+* `AMQP_PASSWORD`
+* `AMQP_TLS` # Use TLS connection if set
+
 ```ruby
 amqp_connection = Twingly::AMQP::Connection(
   hosts: # Optional, uses ENV[/RABBITMQ_\d+_HOST/] by default

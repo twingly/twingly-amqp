@@ -21,6 +21,7 @@ module Twingly
             user: ENV.fetch("AMQP_USERNAME"),
             pass: ENV.fetch("AMQP_PASSWORD"),
             recover_from_connection_close: true,
+            tls: tls?,
           }
           connection = Bunny.new(connection_options)
         end
@@ -30,6 +31,10 @@ module Twingly
 
       def ruby_env
         ENV.fetch("RUBY_ENV")
+      end
+
+      def tls?
+        ENV.has_key?("AMQP_TLS")
       end
 
       def amqp_hosts
