@@ -11,18 +11,18 @@ module Twingly
         connection ||= Connection.new.connection
         @channel = create_channel(connection)
 
+        @queue   = @channel.queue(@queue_name, queue_options)
+        exchange = @channel.topic(@exchange_topic, durable: true)
+        @queue.bind(exchange, routing_key: @routing_key)
+
         @before_handle_message_callback = Proc.new {}
         @on_exception_callback          = Proc.new {}
       end
 
       def subscribe(&block)
-        queue    = @channel.queue(@queue_name, queue_options)
-        exchange = @channel.topic(@exchange_topic, durable: true)
-        queue.bind(exchange, routing_key: @routing_key)
-
         setup_traps
 
-        consumer = queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
+        consumer = @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
           begin
             @before_handle_message_callback.call(payload)
 
@@ -50,6 +50,14 @@ module Twingly
 
       def on_exception(&block)
         @on_exception_callback = block
+      end
+
+      def cancel?
+        @cancel
+      end
+
+      def cancel!
+        @cancel = true
       end
 
       private
@@ -88,14 +96,6 @@ module Twingly
       def consumer_tag
         tag_name = [Socket.gethostname, ruby_env].join('-')
         @channel.generate_consumer_tag(tag_name)
-      end
-
-      def cancel?
-        @cancel
-      end
-
-      def cancel!
-        @cancel = true
       end
 
       def setup_traps

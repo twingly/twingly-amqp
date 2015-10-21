@@ -7,8 +7,14 @@ shared_context "amqp queue" do
 
   let(:amqp_queue) do
     channel = amqp_connection.create_channel
-    channel.queue(queue_name)
+    channel.queue(queue_name, durable: true)
   end
 
-  before { amqp_queue.purge }
+  before do
+    amqp_queue
+  end
+
+  after do
+    amqp_queue.delete
+  end
 end
