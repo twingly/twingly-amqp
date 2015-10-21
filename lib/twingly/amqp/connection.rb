@@ -34,7 +34,7 @@ module Twingly
       end
 
       def tls?
-        !!ENV.fetch("AMQP_TLS") { false }
+        ENV.has_key?("AMQP_TLS")
       end
 
       def amqp_hosts
