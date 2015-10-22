@@ -22,10 +22,14 @@ Environment variables:
 * `AMQP_PASSWORD`
 * `AMQP_TLS` # Use TLS connection if set
 
+### Customize options
+
+If you don't have the RabbitMQ hosts in your ENV you can set them with `Twingly::AMQP::Connection.connection` before you create an instance of `Subscription` or `Ping`.
+
 ```ruby
-amqp_connection = Twingly::AMQP::Connection(
-  hosts: # Optional, uses ENV[/RABBITMQ_\d+_HOST/] by default
-)
+Twingly::AMQP::Connection.options = {
+  hosts: "localhost",
+}
 ```
 
 ### Subscribe to a queue
@@ -37,7 +41,6 @@ subscription = Twingly::AMQP::Subscription.new(
   routing_key:      "url.blog",
   consumer_threads: 4, # Optional
   prefetch:         20, # Optional
-  connection:       amqp_connection, # Optional, creates new AMQP::Connection if not set
 )
 
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
@@ -57,7 +60,6 @@ pinger = Twingly::AMQP::Ping.new(
   queue_name:    "provider-ping",
   source_ip:     "?.?.?.?",
   priority:      1,
-  connection:    amqp_connection, # Optional, creates new AMQP::Connection if not set
   url_cache:     url_cache, # Optional, see below
 )
 

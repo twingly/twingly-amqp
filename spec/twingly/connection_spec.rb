@@ -1,28 +1,16 @@
 describe Twingly::AMQP::Connection do
-  describe ".new" do
-    let(:host) { "localhost" }
-    let(:rabbitmq_host_env_name) { "RABBITMQ_01_HOST" }
+  subject { described_class }
+  it { is_expected.to     respond_to(:options=) }
+  it { is_expected.to     respond_to(:instance) }
+  it { is_expected.not_to respond_to(:new) }
 
-    context "without arguments" do
-      it "should read them from ENV" do
-        expect { described_class.new }.to_not raise_exception
-      end
-    end
+  describe ".instance" do
+    context "when called multiple times" do
+      it "should return the same instance each time" do
+        first_connection  = described_class.instance
+        second_connection = described_class.instance
 
-    context "when given hosts array as argument" do
-      it "should not read them from ENV" do
-        expect(ENV).not_to receive(:[]).with(rabbitmq_host_env_name)
-
-        described_class.new(hosts: [ host ])
-      end
-    end
-
-    context "when AMQP_TLS is set" do
-      before { ENV["AMQP_TLS"] = "oh yeah" }
-      after  { ENV.delete("AMQP_TLS") }
-
-      it "should enable tls for bunny" do
-        expect { described_class.new }.to raise_error(Bunny::TCPConnectionFailedForAllHosts)
+        expect(first_connection).to equal(second_connection)
       end
     end
   end

@@ -8,7 +8,7 @@ module Twingly
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
 
-        connection ||= Connection.new.connection
+        connection ||= Connection.instance
         @channel = create_channel(connection)
 
         @queue   = @channel.queue(@queue_name, queue_options)
