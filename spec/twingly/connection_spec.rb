@@ -5,7 +5,6 @@ describe Twingly::AMQP::Connection do
 
     context "without arguments" do
       it "should read them from ENV" do
-        # TODO test doesnt really check that they are read from ENV
         expect { described_class.new }.to_not raise_exception
       end
     end
