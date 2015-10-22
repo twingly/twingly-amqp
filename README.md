@@ -24,7 +24,7 @@ Environment variables:
 
 ### Customize options
 
-If you don't have the RabbitMQ hosts in your ENV you can set them with `Twingly::AMQP::Connection.connection` before you create an instance of `Subscription` or `Ping`.
+If you don't have the RabbitMQ hosts in your ENV you can set them with `Twingly::AMQP::Connection.options=` before you create an instance of `Subscription` or `Ping`.
 
 ```ruby
 Twingly::AMQP::Connection.options = {
