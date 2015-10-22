@@ -1,6 +1,9 @@
 language: ruby
 sudo: false
 
+services:
+  - rabbitmq
+
 rvm:
   - 2.2
 
