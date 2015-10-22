@@ -85,3 +85,13 @@ class UrlCache
   end
 end
 ```
+
+## Tests
+
+The tests require a local RabbitMQ server to run.
+
+Run tests with
+
+```shell
+bundle exec rake
+```
