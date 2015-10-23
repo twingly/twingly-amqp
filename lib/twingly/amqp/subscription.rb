@@ -1,3 +1,6 @@
+require "twingly/amqp/connection"
+require "json"
+
 module Twingly
   module AMQP
     class Subscription
