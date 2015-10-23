@@ -7,7 +7,7 @@ module Twingly
       REQUEUE = :requeue
       DISCARD = :discard
 
-      attr_accessor :status, :delivery_info, :metadata, :payload
+      attr_reader :delivery_info, :metadata, :payload
 
       def initialize(delivery_info:, metadata:, payload:)
         @delivery_info = delivery_info
@@ -18,28 +18,28 @@ module Twingly
         yield self if block_given?
       end
 
-      def ack
-        status = ACK
+      def ack!
+        @status = ACK
       end
 
-      def requeue
-        status = REQUEUE
+      def requeue!
+        @status = REQUEUE
       end
 
-      def discard
-        status = DISCARD
+      def discard!
+        @status = DISCARD
       end
 
       def ack?
-        status == ACK
+        @status == ACK
       end
 
       def requeue?
-        status == REQUEUE
+        @status == REQUEUE
       end
 
       def discard?
-        status == DISCARD
+        @status == DISCARD
       end
 
       private
