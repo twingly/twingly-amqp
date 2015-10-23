@@ -12,7 +12,7 @@ module Twingly
         @source_ip     = source_ip
         @priority      = priority
 
-        connection ||= Connection.new.connection
+        connection ||= Connection.instance
         @channel = connection.create_channel
       end
 
