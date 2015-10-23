@@ -44,11 +44,12 @@ subscription = Twingly::AMQP::Subscription.new(
 )
 
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
-subscription.before_handle_message { |raw_message| puts raw_message }
+subscription.before_handle_message { |raw_message_payload| puts raw_message }
 
-subscription.subscribe do |payload|
-  # The payload is parsed JSON
-  puts payload[:some_key]
+subscription.subscribe do |message| # An instance of Twingly::AMQP::Message
+  puts message.payload[:some_key]
+
+  message.requeue! # Requeues the message, see Twingly::AMQP::Message
 end
 ```
 
