@@ -1,6 +1,5 @@
 require "twingly/amqp/connection"
 require "twingly/amqp/message"
-require "json"
 
 module Twingly
   module AMQP
@@ -30,18 +29,18 @@ module Twingly
           begin
             @before_handle_message_callback.call(payload)
 
-            messages = create_messages(delivery_info, metadata, payload)
-            messages.each do |message|
-              block.call(message)
-            end
+            message = Message.new(
+              delivery_info: delivery_info,
+              metadata:      metadata,
+              payload:       payload
+            )
 
-            requeue = messages.any? { |message| message.requeue? }
-            discard = messages.all? { |discard| message.discard? }
+            block.call(message)
 
-            case
-            when requeue then @channel.reject(delivery_info.delivery_tag, true)
-            when discard then @channel.reject(delivery_info.delivery_tag, false)
-            else @channel.ack(delivery_info.delivery_tag)
+            if message.ack?
+              @channel.ack(delivery_info.delivery_tag)
+            else
+              @channel.reject(delivery_info.delivery_tag, message.requeue?)
             end
           rescue
             @channel.reject(delivery_info.delivery_tag)
@@ -121,28 +120,6 @@ module Twingly
             # Set cancel flag, cancels consumers
             cancel!
           end
-        end
-      end
-
-      def create_messages(delivery_info, metadata, payload)
-        parsed_payloads = parse_message_payload(payload)
-        messages = parsed_payloads.map do |payload|
-          message_data = {
-            delivery_info: delivery_info,
-            metadata:      metadata,
-            payload:       payload,
-          }
-          Message.new(message_data)
-        end
-      end
-
-      def parse_message_payload(payload)
-        result = JSON.parse(payload, symbolize_names: true)
-
-        if result.is_a?(Array)
-          result
-        else
-          [result]
         end
       end
     end

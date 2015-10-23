@@ -12,9 +12,8 @@ module Twingly
       def initialize(delivery_info:, metadata:, payload:)
         @delivery_info = delivery_info
         @metadata      = metadata
-        @payload       = payload
-
-        @status = :ack
+        @payload       = parse_payload(payload)
+        @status        = ACK
 
         yield self if block_given?
       end
@@ -41,6 +40,12 @@ module Twingly
 
       def discard?
         status == DISCARD
+      end
+
+      private
+
+      def parse_payload(payload)
+        JSON.parse(payload, symbolize_names: true)
       end
     end
   end
