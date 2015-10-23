@@ -1,4 +1,5 @@
 require "twingly/amqp/connection"
+require "twingly/amqp/message"
 require "json"
 
 module Twingly
@@ -29,9 +30,19 @@ module Twingly
           begin
             @before_handle_message_callback.call(payload)
 
-            handle_message_payload(payload, &block)
+            messages = create_messages(delivery_info, metadata, payload)
+            messages.each do |message|
+              block.call(message)
+            end
 
-            @channel.ack(delivery_info.delivery_tag)
+            requeue = messages.any? { |message| message.requeue? }
+            discard = messages.all? { |discard| message.discard? }
+
+            case
+            when requeue then @channel.reject(delivery_info.delivery_tag, true)
+            when discard then @channel.reject(delivery_info.delivery_tag, false)
+            else @channel.ack(delivery_info.delivery_tag)
+            end
           rescue
             @channel.reject(delivery_info.delivery_tag)
             raise
@@ -113,11 +124,15 @@ module Twingly
         end
       end
 
-      def handle_message_payload(payload, &block)
-        messages = parse_message_payload(payload)
-
-        messages.each do |message|
-          block.call(message)
+      def create_messages(delivery_info, metadata, payload)
+        parsed_payloads = parse_message_payload(payload)
+        messages = parsed_payloads.map do |payload|
+          message_data = {
+            delivery_info: delivery_info,
+            metadata:      metadata,
+            payload:       payload,
+          }
+          Message.new(message_data)
         end
       end
 
