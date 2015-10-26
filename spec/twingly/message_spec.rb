@@ -1,12 +1,17 @@
 describe Twingly::AMQP::Message do
-  let(:delivery_info) { "delivery_info" }
+  let(:delivery_tag) { 1 }
+  let(:delivery_info) do
+    double("delivery_info", delivery_tag: delivery_tag)
+  end
   let(:metadata)      { "metadata" }
   let(:payload)       { { url: "test.se" } }
+  let(:channel)       { double("channel") }
   let(:message_data) do
     {
       delivery_info: delivery_info,
       metadata:      metadata,
       payload:       payload.to_json,
+      channel:       channel,
     }
   end
 
@@ -14,6 +19,9 @@ describe Twingly::AMQP::Message do
   it { is_expected.to respond_to(:delivery_info) }
   it { is_expected.to respond_to(:metadata) }
   it { is_expected.to respond_to(:payload) }
+  it { is_expected.to respond_to(:ack) }
+  it { is_expected.to respond_to(:requeue) }
+  it { is_expected.to respond_to(:reject) }
 
   describe "#delivery_info" do
     it "should return the delivery info" do
@@ -33,51 +41,27 @@ describe Twingly::AMQP::Message do
     end
   end
 
-  describe "#ack?" do
-    context "by default" do
-      it "should be true" do
-        expect(subject.ack?).to eq(true)
-      end
-    end
+  describe "#ack" do
+    it "should send ack to the channel" do
+      expect(channel).to receive(:ack).with(delivery_tag)
 
-    context "when another status is set" do
-      before { subject.requeue! }
-
-      it "should be false" do
-        expect(subject.ack?).to eq(false)
-      end
+      subject.ack
     end
   end
 
-  describe "#requeue?" do
-    context "by default" do
-      it "should be false" do
-        expect(subject.requeue?).to eq(false)
-      end
-    end
+  describe "#requeue" do
+    it "should send reject with requeue to the channel" do
+      expect(channel).to receive(:reject).with(delivery_tag, true)
 
-    context "when it is set" do
-      before { subject.requeue! }
-
-      it "should be true" do
-        expect(subject.requeue?).to eq(true)
-      end
+      subject.requeue
     end
   end
 
-  describe "#discard?" do
-    context "by default" do
-      it "should be false" do
-        expect(subject.discard?).to eq(false)
-      end
-    end
+  describe "#reject" do
+    it "should send reject without requeue to the channel" do
+      expect(channel).to receive(:reject).with(delivery_tag, false)
 
-    context "when it is set" do
-      before { subject.discard! }
-
-      it "should be true" do
-        expect(subject.discard?).to eq(true)
-      end
+      subject.reject
     end
   end
 end

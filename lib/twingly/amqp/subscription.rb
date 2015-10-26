@@ -32,18 +32,13 @@ module Twingly
             message = Message.new(
               delivery_info: delivery_info,
               metadata:      metadata,
-              payload:       payload
+              payload:       payload,
+              channel:       @channel,
             )
 
             block.call(message)
-
-            if message.ack?
-              @channel.ack(delivery_info.delivery_tag)
-            else
-              @channel.reject(delivery_info.delivery_tag, message.requeue?)
-            end
           rescue
-            @channel.reject(delivery_info.delivery_tag)
+            @channel.reject(delivery_info.delivery_tag, false)
             raise
           end
         end

@@ -3,41 +3,25 @@ require "json"
 module Twingly
   module AMQP
     class Message
-      ACK     = :ack
-      REQUEUE = :requeue
-      DISCARD = :discard
-
       attr_reader :delivery_info, :metadata, :payload
 
-      def initialize(delivery_info:, metadata:, payload:)
+      def initialize(delivery_info:, metadata:, payload:, channel:)
         @delivery_info = delivery_info
         @metadata      = metadata
         @payload       = parse_payload(payload)
-        @status        = ACK
+        @channel       = channel
       end
 
-      def ack!
-        @status = ACK
+      def ack
+        @channel.ack(@delivery_info.delivery_tag)
       end
 
-      def requeue!
-        @status = REQUEUE
+      def requeue
+        @channel.reject(@delivery_info.delivery_tag, true)
       end
 
-      def discard!
-        @status = DISCARD
-      end
-
-      def ack?
-        @status == ACK
-      end
-
-      def requeue?
-        @status == REQUEUE
-      end
-
-      def discard?
-        @status == DISCARD
+      def reject
+        @channel.reject(@delivery_info.delivery_tag, false)
       end
 
       private
