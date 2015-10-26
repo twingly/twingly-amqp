@@ -47,12 +47,17 @@ subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
 subscription.before_handle_message { |raw_message_payload| puts raw_message }
 
 subscription.subscribe do |message| # An instance of Twingly::AMQP::Message
-  response = client.post(payload.fetch(:url))
+  begin
+    response = client.post(payload.fetch(:url))
 
-  case response.code
-  when 200 then message.ack     # No error
-  when 404 then message.reject  # Permanent error, discard
-  when 500 then message.requeue # Transient error, retry
+    case response.code
+    when 200 then message.ack     # No error
+    when 404 then message.reject  # Permanent error, discard
+    when 500 then message.requeue # Transient error, retry
+    end
+  rescue
+    # It's up to the client to handle all exceptions
+    message.reject                # Unknown error, discard
   end
 end
 ```

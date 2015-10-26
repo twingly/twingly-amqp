@@ -26,21 +26,16 @@ module Twingly
         setup_traps
 
         consumer = @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
-          begin
-            @before_handle_message_callback.call(payload)
+          @before_handle_message_callback.call(payload)
 
-            message = Message.new(
-              delivery_info: delivery_info,
-              metadata:      metadata,
-              payload:       payload,
-              channel:       @channel,
-            )
+          message = Message.new(
+            delivery_info: delivery_info,
+            metadata:      metadata,
+            payload:       payload,
+            channel:       @channel,
+          )
 
-            block.call(message)
-          rescue
-            @channel.reject(delivery_info.delivery_tag, false)
-            raise
-          end
+          block.call(message)
         end
 
         # The consumer isn't blocking, so we wait here
