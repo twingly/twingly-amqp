@@ -14,8 +14,6 @@ module Twingly
         @metadata      = metadata
         @payload       = parse_payload(payload)
         @status        = ACK
-
-        yield self if block_given?
       end
 
       def ack!
