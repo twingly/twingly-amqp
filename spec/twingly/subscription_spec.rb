@@ -4,7 +4,7 @@ require "timeout"
 describe Twingly::AMQP::Subscription do
   SUBSCRIPTION_TIMEOUT = 5
 
-  around(:example) do |example|
+  around(:each) do |example|
     Timeout::timeout(SUBSCRIPTION_TIMEOUT) do
       example.run
     end
