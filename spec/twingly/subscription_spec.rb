@@ -27,8 +27,8 @@ describe Twingly::AMQP::Subscription do
         sleep 1
 
         received_url = nil
-        subject.subscribe do |payload|
-          received_url = payload[:url]
+        subject.subscribe do |message|
+          received_url = message.payload[:url]
           subject.cancel!
         end
 
@@ -48,8 +48,8 @@ describe Twingly::AMQP::Subscription do
         sleep 1
 
         received_url = nil
-        subject.subscribe do |payload|
-          received_url = payload[:url]
+        subject.subscribe do |message|
+          received_url = message.payload[:url]
           subject.cancel!
         end
 

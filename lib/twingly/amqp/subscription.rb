@@ -1,5 +1,5 @@
 require "twingly/amqp/connection"
-require "json"
+require "twingly/amqp/message"
 
 module Twingly
   module AMQP
@@ -26,16 +26,16 @@ module Twingly
         setup_traps
 
         consumer = @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
-          begin
-            @before_handle_message_callback.call(payload)
+          @before_handle_message_callback.call(payload)
 
-            handle_message_payload(payload, &block)
+          message = Message.new(
+            delivery_info: delivery_info,
+            metadata:      metadata,
+            payload:       payload,
+            channel:       @channel,
+          )
 
-            @channel.ack(delivery_info.delivery_tag)
-          rescue
-            @channel.reject(delivery_info.delivery_tag)
-            raise
-          end
+          block.call(message)
         end
 
         # The consumer isn't blocking, so we wait here
@@ -110,24 +110,6 @@ module Twingly
             # Set cancel flag, cancels consumers
             cancel!
           end
-        end
-      end
-
-      def handle_message_payload(payload, &block)
-        messages = parse_message_payload(payload)
-
-        messages.each do |message|
-          block.call(message)
-        end
-      end
-
-      def parse_message_payload(payload)
-        result = JSON.parse(payload, symbolize_names: true)
-
-        if result.is_a?(Array)
-          result
-        else
-          [result]
         end
       end
     end
