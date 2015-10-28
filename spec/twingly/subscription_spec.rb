@@ -1,6 +1,15 @@
 require "amqp_queue_context"
+require "timeout"
 
 describe Twingly::AMQP::Subscription do
+  SUBSCRIPTION_TIMEOUT = 5
+
+  around(:example) do |example|
+    Timeout::timeout(SUBSCRIPTION_TIMEOUT) do
+      example.run
+    end
+  end
+
   include_context "amqp queue"
 
   let(:payload_url)    { "http://www.test.se" }
