@@ -87,5 +87,30 @@ describe Twingly::AMQP::Subscription do
         expect(on_exception_called).to eq(true)
       end
     end
+
+    context "without exchange_topic and routing_key" do
+      let(:default_exchange) do
+        amqp_connection.create_channel.default_exchange
+      end
+
+      subject! do
+        described_class.new(
+          queue_name: queue_name,
+        )
+      end
+
+      it "should subscribe to default exchange" do
+        default_exchange.publish(payload_json, routing_key: queue_name)
+        sleep 1
+
+        received_url = nil
+        subject.subscribe do |message|
+          received_url = message.payload[:url]
+          subject.cancel!
+        end
+
+        expect(received_url).to eq(payload_url)
+      end
+    end
   end
 end

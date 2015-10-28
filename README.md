@@ -37,10 +37,10 @@ Twingly::AMQP::Connection.options = {
 ```ruby
 subscription = Twingly::AMQP::Subscription.new(
   queue_name:       "crawler-urls",
-  exchange_topic:   "url-exchange",
-  routing_key:      "url.blog",
-  consumer_threads: 4, # Optional
-  prefetch:         20, # Optional
+  exchange_topic:   "url-exchange", # Optional, uses the default exchange if omitted
+  routing_key:      "url.blog",     # Optional, uses the default exchange if omitted
+  consumer_threads: 4,              # Optional
+  prefetch:         20,             # Optional
 )
 
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
