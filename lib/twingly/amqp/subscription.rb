@@ -4,7 +4,7 @@ require "twingly/amqp/message"
 module Twingly
   module AMQP
     class Subscription
-      def initialize(queue_name:, exchange_topic:, routing_key:, consumer_threads: 4, prefetch: 20, connection: nil)
+      def initialize(queue_name:, exchange_topic: nil, routing_key: nil, consumer_threads: 4, prefetch: 20, connection: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_key      = routing_key
@@ -13,10 +13,12 @@ module Twingly
 
         connection ||= Connection.instance
         @channel = create_channel(connection)
-
         @queue   = @channel.queue(@queue_name, queue_options)
-        exchange = @channel.topic(@exchange_topic, durable: true)
-        @queue.bind(exchange, routing_key: @routing_key)
+
+        if @exchange_topic && @routing_key
+          exchange = @channel.topic(@exchange_topic, durable: true)
+          @queue.bind(exchange, routing_key: @routing_key)
+        end
 
         @before_handle_message_callback = Proc.new {}
         @on_exception_callback          = Proc.new {}
