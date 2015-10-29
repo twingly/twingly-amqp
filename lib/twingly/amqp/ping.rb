@@ -44,7 +44,7 @@ module Twingly
 
       def message(url, options)
         source_ip = options.fetch(:source_ip) { @source_ip }
-        raise ArgumentError.new(":source_ip not specified") unless source_ip
+        raise ArgumentError, ":source_ip not specified" unless source_ip
 
         {
           automatic_ping: false,
