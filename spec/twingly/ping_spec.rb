@@ -7,6 +7,10 @@ describe Twingly::AMQP::Ping do
   let(:source_ip)     { "127.0.0.1" }
   let(:priority)      { 1 }
 
+  let(:urls)         { "http://example.com" }
+  let(:ping_options) { {} }
+
+
   subject do
     described_class.new(
       provider_name: provider_name,
@@ -18,14 +22,12 @@ describe Twingly::AMQP::Ping do
   end
 
   before do
-    subject.ping(urls)
+    subject.ping(urls, ping_options)
     sleep 1
   end
 
   describe "#ping" do
     context "with one URL" do
-      let(:urls) { "http://example.com" }
-
       it "should publish one message to the queue" do
         expect(amqp_queue.message_count).to eq(1)
       end
@@ -51,6 +53,19 @@ describe Twingly::AMQP::Ping do
 
       it "should send multiple pings" do
         expect(amqp_queue.message_count).to eq(urls.length)
+      end
+    end
+
+    context "with :source_ip as argument" do
+      let(:ping_source_ip) { "8.8.8.8" }
+      let(:ping_options)   { { source_ip: ping_source_ip } }
+
+      it "should send a ping containing that source ip" do
+        _, _, payload = amqp_queue.pop
+
+        actual_payload   = JSON.parse(payload, symbolize_names: true)
+        actual_source_ip = actual_payload.fetch(:source_ip)
+        expect(actual_source_ip).to eq(ping_source_ip)
       end
     end
   end

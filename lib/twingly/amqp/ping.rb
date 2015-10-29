@@ -16,10 +16,10 @@ module Twingly
         @channel = connection.create_channel
       end
 
-      def ping(urls)
+      def ping(urls, options = {})
         Array(urls).each do |url|
           unless cached?(url)
-            publish(url)
+            publish(url, options)
             cache!(url)
 
             yield url if block_given?
@@ -29,12 +29,12 @@ module Twingly
 
       private
 
-      def publish(url)
-        payload = message(url).to_json
-        @channel.default_exchange.publish(payload, options)
+      def publish(url, options)
+        payload = message(url, options).to_json
+        @channel.default_exchange.publish(payload, amqp_publish_options)
       end
 
-      def options
+      def amqp_publish_options
         {
           key: @queue_name,
           persistent: true,
@@ -42,12 +42,14 @@ module Twingly
         }
       end
 
-      def message(url)
+      def message(url, options)
+        source_ip = options.fetch(:source_ip) { @source_ip }
+
         {
           automatic_ping: false,
           provider_name: @provider_name,
           priority: @priority,
-          source_ip: @source_ip,
+          source_ip: source_ip,
           url: url,
         }
       end
