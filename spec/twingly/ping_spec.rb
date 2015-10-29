@@ -21,12 +21,12 @@ describe Twingly::AMQP::Ping do
     )
   end
 
-  before do
-    subject.ping(urls, ping_options)
-    sleep 1
-  end
-
   describe "#ping" do
+    before do
+      subject.ping(urls, ping_options)
+      sleep 1
+    end
+
     context "with one URL" do
       it "should publish one message to the queue" do
         expect(amqp_queue.message_count).to eq(1)
@@ -66,6 +66,36 @@ describe Twingly::AMQP::Ping do
         actual_payload   = JSON.parse(payload, symbolize_names: true)
         actual_source_ip = actual_payload.fetch(:source_ip)
         expect(actual_source_ip).to eq(ping_source_ip)
+      end
+    end
+  end
+
+  context "without :source_ip to constructor" do
+    subject do
+      described_class.new(
+        provider_name: provider_name,
+        queue_name:    queue_name,
+        priority:      priority,
+      )
+    end
+
+    describe ".new" do
+      it "should not raise an error" do
+        expect{ subject }.not_to raise_error
+      end
+    end
+
+    describe "#ping" do
+      context "without :source_ip as argument" do
+        it "should raise an argument error" do
+          expect { subject.ping(urls) }.to raise_error(ArgumentError)
+        end
+      end
+
+      context "with :source_ip as argument" do
+        it "should not raise an error" do
+          expect { subject.ping(urls, source_ip: "1.2.3.4") }.not_to raise_error
+        end
       end
     end
   end

@@ -4,7 +4,7 @@ require "json"
 module Twingly
   module AMQP
     class Ping
-      def initialize(provider_name:, queue_name:, source_ip:, priority:, url_cache: NullCache, connection: nil)
+      def initialize(provider_name:, queue_name:, priority:, source_ip: nil, url_cache: NullCache, connection: nil)
         @url_cache = url_cache
 
         @provider_name = provider_name
@@ -44,6 +44,7 @@ module Twingly
 
       def message(url, options)
         source_ip = options.fetch(:source_ip) { @source_ip }
+        raise ArgumentError.new(":source_ip not specified") unless source_ip
 
         {
           automatic_ping: false,
