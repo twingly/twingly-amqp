@@ -68,8 +68,8 @@ end
 pinger = Twingly::AMQP::Ping.new(
   provider_name: "a-provider-name",
   queue_name:    "provider-ping",
-  source_ip:     "?.?.?.?",
   priority:      1,
+  source_ip:     "?.?.?.?", # Optional, can be given to #ping
   url_cache:     url_cache, # Optional, see below
 )
 
@@ -80,6 +80,9 @@ urls = [
 pinger.ping(urls) do |pinged_url|
   # Optional block that gets called for each pinged url
 end
+
+# Send a ping using another source ip
+pinger.ping(urls, source_ip: "1.2.3.4")
 ```
 
 #### Url cache
