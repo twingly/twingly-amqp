@@ -110,3 +110,13 @@ Run tests with
 ```shell
 bundle exec rake
 ```
+
+## Release workflow
+
+**Note**: Make sure you are logged in as [twingly][twingly-rubygems] at RubyGems.org.
+
+Build and [publish](http://guides.rubygems.org/publishing/) the gem.
+
+    bundle exec rake release
+
+[twingly-rubygems]: https://rubygems.org/profiles/twingly
