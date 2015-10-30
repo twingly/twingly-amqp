@@ -10,8 +10,12 @@ A gem for subscribing and publishing messages via RabbitMQ.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "twingly-amqp", :git => "git@github.com:twingly/twingly-amqp.git"
+gem "twingly-amqp"
 ```
+
+Or install it yourself as:
+
+    $ gem install twingly-amqp
 
 ## Usage
 
