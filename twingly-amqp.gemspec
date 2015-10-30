@@ -9,10 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Twingly AB"]
   spec.email         = ["support@twingly.com"]
 
-  spec.summary       = %q{Ruby library for talking to RabbitMQ.}
-  spec.description   = %q{Pings urls via RabbitMQ.}
+  spec.summary       = %q{Ruby library for talking to RabbitMQ}
+  spec.description   = %q{Publish and subscribe to messages via RabbitMQ}
   spec.homepage      = "https://github.com/twingly/twingly-amqp"
-
 
   spec.files        = Dir.glob("{lib}/**/*") + %w(README.md)
   spec.require_paths = ["lib"]
