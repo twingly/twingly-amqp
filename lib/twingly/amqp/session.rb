@@ -1,10 +1,10 @@
 module Twingly
   module AMQP
     class Session
-      attr_reader :connection, :hosts
+      attr_reader :connection, :options
 
-      def initialize(hosts: nil)
-        @hosts      = hosts || hosts_from_env
+      def initialize(options = {})
+        @options    = options
         @connection = create_connection
       end
 
@@ -14,17 +14,25 @@ module Twingly
         if ruby_env == "development"
           connection = Bunny.new
         else
-          connection_options = {
-            hosts: hosts,
-            user: ENV.fetch("AMQP_USERNAME"),
-            pass: ENV.fetch("AMQP_PASSWORD"),
-            recover_from_connection_close: true,
-            tls: tls?,
-          }
           connection = Bunny.new(connection_options)
         end
         connection.start
         connection
+      end
+
+      def connection_options
+        options[:user]  ||= user_from_env
+        options[:pass]  ||= password_from_env
+        options[:hosts] ||= hosts_from_env
+
+        default_connection_options.merge(options)
+      end
+
+      def default_connection_options
+        {
+          recover_from_connection_close: true,
+          tls: tls?,
+        }
       end
 
       def ruby_env
@@ -33,6 +41,14 @@ module Twingly
 
       def tls?
         ENV.has_key?("AMQP_TLS")
+      end
+
+      def user_from_env
+        ENV.fetch("AMQP_USERNAME")
+      end
+
+      def password_from_env
+        ENV.fetch("AMQP_PASSWORD")
       end
 
       def hosts_from_env
