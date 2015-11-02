@@ -30,7 +30,6 @@ module Twingly
 
       def default_connection_options
         {
-          recover_from_connection_close: true,
           tls: tls?,
         }
       end
