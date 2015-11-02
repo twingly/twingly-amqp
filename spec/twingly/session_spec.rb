@@ -4,8 +4,23 @@ describe Twingly::AMQP::Session do
     let(:rabbitmq_host_env_name) { "RABBITMQ_01_HOST" }
 
     context "without arguments" do
+      let(:amqp_user_from_env) { ENV.fetch("AMQP_USERNAME") }
+      let(:amqp_pass_from_env) { ENV.fetch("AMQP_PASSWORD") }
+      let(:amqp_host_from_env) { ENV.fetch("RABBITMQ_01_HOST") }
+      let(:amqp_options_from_env) do
+        {
+          user:  amqp_user_from_env,
+          pass:  amqp_pass_from_env,
+          hosts: [ amqp_host_from_env ],
+        }
+      end
+
       it "should read them from ENV" do
-        expect { described_class.new }.to_not raise_exception
+        expect(ENV).to receive(:fetch).at_least(:once).and_call_original
+
+        expect(Bunny).to receive(:new).with(hash_including(amqp_options_from_env)).and_call_original
+
+        described_class.new
       end
     end
 
