@@ -30,7 +30,7 @@ Environment variables:
 
 If you don't have the RabbitMQ hosts, user or password in your ENV you can set them with `Twingly::AMQP::Connection.options=` before you create an instance of `Subscription` or `Ping`.
 
-All options are sent to `Bunny.new`, see the documentation at [ruby-bunny][] for all available options.
+All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
 
 ```ruby
 Twingly::AMQP::Connection.options = {
