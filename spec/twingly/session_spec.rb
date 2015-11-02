@@ -1,8 +1,5 @@
 describe Twingly::AMQP::Session do
   describe ".new" do
-    let(:hosts) { [ "localhost" ] }
-    let(:rabbitmq_host_env_name) { "RABBITMQ_01_HOST" }
-
     context "without arguments" do
       let(:amqp_user_from_env) { ENV.fetch("AMQP_USERNAME") }
       let(:amqp_pass_from_env) { ENV.fetch("AMQP_PASSWORD") }
@@ -25,7 +22,11 @@ describe Twingly::AMQP::Session do
     end
 
     context "with arguments" do
+      let(:hosts) { [ "localhost" ] }
+
       context "with hosts array" do
+        let(:rabbitmq_host_env_name) { "RABBITMQ_01_HOST" }
+
         it "should not read them from ENV" do
           expect(ENV).not_to receive(:[]).with(rabbitmq_host_env_name)
 
