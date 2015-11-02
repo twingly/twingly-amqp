@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.files        = Dir.glob("{lib}/**/*") + %w(README.md)
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "bunny", "~> 2"
+  spec.add_dependency "bunny", "~> 2.2"
 
   spec.add_development_dependency "rspec", "~> 3"
   spec.add_development_dependency "rake", "~> 10.0"
