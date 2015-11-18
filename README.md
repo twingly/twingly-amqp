@@ -61,7 +61,7 @@ subscription.before_handle_message { |raw_message_payload| puts raw_message }
 
 subscription.subscribe do |message| # An instance of Twingly::AMQP::Message
   begin
-    response = client.post(payload.fetch(:url))
+    response = client.post(message.payload.fetch(:url))
 
     case response.code
     when 200 then message.ack     # No error
