@@ -70,12 +70,10 @@ describe Twingly::AMQP::Ping do
     end
   end
 
-  context "without :source_ip to constructor" do
+  context "without any optional arguments to constructor" do
     subject do
       described_class.new(
-        provider_name: provider_name,
         queue_name:    queue_name,
-        priority:      priority,
       )
     end
 
@@ -86,15 +84,47 @@ describe Twingly::AMQP::Ping do
     end
 
     describe "#ping" do
+      let(:required_options) do
+        {
+          provider_name: provider_name,
+          source_ip:     source_ip,
+          priority:      priority,
+        }
+      end
+
+      let(:ping) do
+        subject.ping(urls, options)
+      end
+
       context "without :source_ip as argument" do
+        let(:options) { required_options.tap { |opts| opts.delete(:source_ip) } }
+
         it "should raise an argument error" do
-          expect { subject.ping(urls) }.to raise_error(ArgumentError)
+          expect { ping }.to raise_error(ArgumentError, /source_ip/)
         end
       end
 
-      context "with :source_ip as argument" do
+      context "without :provider_name as argument" do
+        let(:options) { required_options.tap { |opts| opts.delete(:provider_name) } }
+
+        it "should raise an argument error" do
+          expect { ping }.to raise_error(ArgumentError, /provider_name/)
+        end
+      end
+
+      context "without :priority as argument" do
+        let(:options) { required_options.tap { |opts| opts.delete(:priority) } }
+
+        it "should raise an argument error" do
+          expect { ping }.to raise_error(ArgumentError, /priority/)
+        end
+      end
+
+      context "with all required ping message keys" do
+        let(:options) { required_options }
+
         it "should not raise an error" do
-          expect { subject.ping(urls, source_ip: "1.2.3.4") }.not_to raise_error
+          expect { ping }.not_to raise_error
         end
       end
     end

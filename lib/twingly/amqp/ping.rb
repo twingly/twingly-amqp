@@ -4,7 +4,7 @@ require "json"
 module Twingly
   module AMQP
     class Ping
-      def initialize(provider_name:, queue_name:, priority:, source_ip: nil, url_cache: NullCache, connection: nil)
+      def initialize(queue_name:, priority: nil, provider_name: nil, source_ip: nil, url_cache: NullCache, connection: nil)
         @url_cache = url_cache
 
         @provider_name = provider_name
@@ -43,16 +43,25 @@ module Twingly
       end
 
       def message(url, options)
-        source_ip = options.fetch(:source_ip) { @source_ip }
-        raise ArgumentError, ":source_ip not specified" unless source_ip
+        provider_name = options.fetch(:provider_name) { @provider_name }
+        source_ip     = options.fetch(:source_ip)     { @source_ip }
+        priority      = options.fetch(:priority)      { @priority }
+
+        raise_missing_argument_error(:provider_name) unless provider_name
+        raise_missing_argument_error(:source_ip)     unless source_ip
+        raise_missing_argument_error(:priority)      unless priority
 
         {
           automatic_ping: false,
-          provider_name: @provider_name,
-          priority: @priority,
-          source_ip: source_ip,
-          url: url,
+          provider_name:  provider_name,
+          source_ip:      source_ip,
+          priority:       priority,
+          url:            url,
         }
+      end
+
+      def raise_missing_argument_error(argument_name)
+        raise ArgumentError, "#{argument_name} not specified"
       end
 
       def cached?(url)
