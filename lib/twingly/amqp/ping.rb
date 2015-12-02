@@ -83,10 +83,6 @@ module Twingly
         end
       end
 
-      def raise_missing_argument_error(argument_name)
-        raise ArgumentError, "#{argument_name} not specified"
-      end
-
       def cached?(url)
         @url_cache.cached?(url)
       end
