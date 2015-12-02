@@ -4,6 +4,14 @@ require "json"
 module Twingly
   module AMQP
     class Ping
+      VALID_PING_OPTIONS = [
+        :automatic_ping,
+        :provider_name,
+        :source_ip,
+        :priority,
+        :url,
+      ]
+
       def initialize(queue_name:, priority: nil, provider_name: nil, source_ip: nil, url_cache: NullCache, connection: nil)
         @url_cache = url_cache
 
@@ -43,21 +51,36 @@ module Twingly
       end
 
       def message(url, options)
-        provider_name = options.fetch(:provider_name) { @provider_name }
-        source_ip     = options.fetch(:source_ip)     { @source_ip }
-        priority      = options.fetch(:priority)      { @priority }
+        ping_message = default_ping_message.merge(options)
+        ping_message[:url] = url
 
-        raise_missing_argument_error(:provider_name) unless provider_name
-        raise_missing_argument_error(:source_ip)     unless source_ip
-        raise_missing_argument_error(:priority)      unless priority
+        fail_on_invalid_ping_options(ping_message)
+        fail_on_empty_ping_options(ping_message)
 
+        ping_message
+      end
+
+      def default_ping_message
         {
           automatic_ping: false,
-          provider_name:  provider_name,
-          source_ip:      source_ip,
-          priority:       priority,
-          url:            url,
+          provider_name:  @provider_name,
+          source_ip:      @source_ip,
+          priority:       @priority,
         }
+      end
+
+      def fail_on_invalid_ping_options(ping_message)
+        invalid_option_keys = ping_message.keys - VALID_PING_OPTIONS
+        unless invalid_option_keys.empty?
+          fail ArgumentError, "Invalid options: #{invalid_option_keys}"
+        end
+      end
+
+      def fail_on_empty_ping_options(ping_message)
+        empty_option_keys = ping_message.select { |_, value| value.to_s.empty? }.keys
+        unless empty_option_keys.empty?
+          fail ArgumentError, "Options not set: #{empty_option_keys}"
+        end
       end
 
       def raise_missing_argument_error(argument_name)

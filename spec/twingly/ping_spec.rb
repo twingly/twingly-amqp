@@ -120,6 +120,23 @@ describe Twingly::AMQP::Ping do
         end
       end
 
+      context "with invalid options" do
+        let(:invalid_options) { { invalid_option: true } }
+        let(:options) { required_options.merge(invalid_options) }
+
+        it "should raise an argument error" do
+          expect { ping }.to raise_error(ArgumentError, /invalid_option/)
+        end
+      end
+
+      context "with an empty option" do
+        let(:options) { required_options.tap { |opts| opts[:priority] = "" } }
+
+        it "should raise an argument error" do
+          expect { ping }.to raise_error(ArgumentError, /priority/)
+        end
+      end
+
       context "with all required ping message keys" do
         let(:options) { required_options }
 
