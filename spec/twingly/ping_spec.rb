@@ -96,27 +96,13 @@ describe Twingly::AMQP::Ping do
         subject.ping(urls, options)
       end
 
-      context "without :source_ip as argument" do
-        let(:options) { required_options.tap { |opts| opts.delete(:source_ip) } }
+      %i(source_ip provider_name priority).each do |option|
+        context "without :#{option} as argument" do
+          let(:options) { required_options.tap { |opts| opts.delete(option) } }
 
-        it "should raise an argument error" do
-          expect { ping }.to raise_error(ArgumentError, /source_ip/)
-        end
-      end
-
-      context "without :provider_name as argument" do
-        let(:options) { required_options.tap { |opts| opts.delete(:provider_name) } }
-
-        it "should raise an argument error" do
-          expect { ping }.to raise_error(ArgumentError, /provider_name/)
-        end
-      end
-
-      context "without :priority as argument" do
-        let(:options) { required_options.tap { |opts| opts.delete(:priority) } }
-
-        it "should raise an argument error" do
-          expect { ping }.to raise_error(ArgumentError, /priority/)
+          it "should raise an argument error" do
+            expect { ping }.to raise_error(ArgumentError, /#{option}/)
+          end
         end
       end
 
@@ -137,7 +123,7 @@ describe Twingly::AMQP::Ping do
         end
       end
 
-      context "with all required ping message keys" do
+      context "with all required ping options set" do
         let(:options) { required_options }
 
         it "should not raise an error" do
