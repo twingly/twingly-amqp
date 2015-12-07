@@ -1,0 +1,27 @@
+module Twingly
+  module AMQP
+    class PingOptions
+      attr_accessor :provider_name, :source_ip, :priority
+
+      def initialize
+        yield self if block_given?
+      end
+
+      def to_h
+        {
+          automatic_ping: false,
+          provider_name:  provider_name,
+          source_ip:      source_ip,
+          priority:       priority,
+        }
+      end
+
+      def validate
+        empty_option_keys = to_h.select { |_, value| value.to_s.empty? }.keys
+        unless empty_option_keys.empty?
+          fail ArgumentError, "Required options not set: #{empty_option_keys}"
+        end
+      end
+    end
+  end
+end

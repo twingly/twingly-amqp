@@ -79,10 +79,7 @@ end
 
 ```ruby
 pinger = Twingly::AMQP::Ping.new(
-  provider_name: "a-provider-name",
   queue_name:    "provider-ping",
-  priority:      1,
-  source_ip:     "?.?.?.?", # Optional, can be given to #ping
   url_cache:     url_cache, # Optional, see below
 )
 
@@ -90,12 +87,15 @@ urls = [
   "http://blog.twingly.com",
 ]
 
-pinger.ping(urls) do |pinged_url|
-  # Optional block that gets called for each pinged url
+options = Twingly::AMQP::PingOptions do
+  provider_name = "a-provider-name"
+  priority      = 1
+  source_ip     = "?.?.?.?"
 end
 
-# Send a ping using another source ip
-pinger.ping(urls, source_ip: "1.2.3.4")
+pinger.ping(urls, options) do |pinged_url|
+  # Optional block that gets called for each pinged url
+end
 ```
 
 #### Url cache
