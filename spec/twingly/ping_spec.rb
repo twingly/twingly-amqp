@@ -69,5 +69,19 @@ describe Twingly::AMQP::Ping do
         expect{ subject.ping(urls, ping_options) }.to raise_error(ArgumentError)
       end
     end
+
+    context "with default options set" do
+      before do
+        subject.default_ping_options do |options|
+          options.provider_name = provider_name
+          options.source_ip     = source_ip
+          options.priority      = priority
+        end
+      end
+
+      it "should not raise an  error" do
+        expect{ subject.ping(urls) }.not_to raise_error
+      end
+    end
   end
 end

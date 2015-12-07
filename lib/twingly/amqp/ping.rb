@@ -10,9 +10,13 @@ module Twingly
 
         connection ||= Connection.instance
         @channel = connection.create_channel
+
+        @default_ping_options = PingOptions.new
       end
 
       def ping(urls, options = PingOptions.new)
+        options = @default_ping_options.merge(options)
+
         options.validate
 
         Array(urls).each do |url|
@@ -23,6 +27,10 @@ module Twingly
             yield url if block_given?
           end
         end
+      end
+
+      def default_ping_options
+        yield @default_ping_options
       end
 
       private

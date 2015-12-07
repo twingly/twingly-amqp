@@ -22,6 +22,14 @@ module Twingly
           fail ArgumentError, "Required options not set: #{empty_option_keys}"
         end
       end
+
+      def merge(other)
+        PingOptions.new do |options|
+          options.provider_name = other.provider_name || provider_name
+          options.source_ip     = other.source_ip     || source_ip
+          options.priority      = other.priority      || priority
+        end
+      end
     end
   end
 end

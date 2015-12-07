@@ -97,4 +97,34 @@ describe Twingly::AMQP::PingOptions do
       end
     end
   end
+
+  describe "#merge" do
+    let(:other_provider_name) { "OtherProvider" }
+    let(:other_source_ip)     { nil }
+    let(:other)  do
+      described_class.new do |options|
+        options.provider_name = other_provider_name
+        options.source_ip     = other_source_ip
+      end
+    end
+    let(:merged) { subject.merge(other) }
+
+    it "should return new PingOptions object" do
+      expect(merged).not_to equal(subject)
+      expect(merged).not_to equal(other)
+      expect(merged).to be_a(Twingly::AMQP::PingOptions)
+    end
+
+    context "when value from self and other are both set" do
+      it "should use value from other" do
+        expect(merged.provider_name).to eq(other_provider_name)
+      end
+    end
+
+    context "when value from other is nil" do
+      it "value from self should be used" do
+        expect(merged.source_ip).to eq(source_ip)
+      end
+    end
+  end
 end
