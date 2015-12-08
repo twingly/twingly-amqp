@@ -29,14 +29,14 @@ describe Twingly::AMQP::Subscription do
     )
   end
 
-  describe "#subscribe" do
+  describe "#each_message" do
     context "when message has same routing key" do
       it "should receive the message published on the exchange" do
         exchange.publish(payload_json, routing_key: routing_key)
         sleep 1
 
         received_url = nil
-        subject.subscribe do |message|
+        subject.each_message do |message|
           received_url = message.payload[:url]
           subject.cancel!
         end
@@ -57,7 +57,7 @@ describe Twingly::AMQP::Subscription do
         sleep 1
 
         received_url = nil
-        subject.subscribe do |message|
+        subject.each_message do |message|
           received_url = message.payload[:url]
           subject.cancel!
         end
@@ -75,7 +75,7 @@ describe Twingly::AMQP::Subscription do
         subject.before_handle_message do |raw_payload|
           unparsed_payload = raw_payload
         end
-        subject.subscribe { |_| subject.cancel! }
+        subject.each_message { |_| subject.cancel! }
 
         expect(unparsed_payload).to eq(payload_json)
       end
@@ -91,7 +91,7 @@ describe Twingly::AMQP::Subscription do
           on_exception_called = true
           subject.cancel!
         end
-        subject.subscribe { |_| subject.cancel! }
+        subject.each_message { |_| subject.cancel! }
 
         expect(on_exception_called).to eq(true)
       end
@@ -113,7 +113,7 @@ describe Twingly::AMQP::Subscription do
         sleep 1
 
         received_url = nil
-        subject.subscribe do |message|
+        subject.each_message do |message|
           received_url = message.payload[:url]
           subject.cancel!
         end

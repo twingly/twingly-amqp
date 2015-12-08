@@ -59,7 +59,7 @@ subscription = Twingly::AMQP::Subscription.new(
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
 subscription.before_handle_message { |raw_message_payload| puts raw_message }
 
-subscription.subscribe do |message| # An instance of Twingly::AMQP::Message
+subscription.each_message do |message| # An instance of Twingly::AMQP::Message
   begin
     response = client.post(message.payload.fetch(:url))
 
