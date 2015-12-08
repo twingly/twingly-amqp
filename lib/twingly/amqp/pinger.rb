@@ -4,7 +4,7 @@ require "json"
 
 module Twingly
   module AMQP
-    class Ping
+    class Pinger
       def initialize(queue_name:, url_cache: NullCache, connection: nil)
         @queue_name = queue_name
         @url_cache  = url_cache
