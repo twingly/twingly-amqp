@@ -24,7 +24,7 @@ module Twingly
         @on_exception_callback          = Proc.new {}
       end
 
-      def subscribe(&block)
+      def each_message(&block)
         setup_traps
 
         consumer = @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
