@@ -21,9 +21,9 @@ module Twingly
       end
 
       def validate
-        empty_option_keys = to_h.select { |_, value| value.to_s.empty? }.keys
-        unless empty_option_keys.empty?
-          fail ArgumentError, "Required options not set: #{empty_option_keys}"
+        missing_keys = to_h.select { |_, value| value.to_s.empty? }.keys
+        if missing_keys.any?
+          fail ArgumentError, "Required options not set: #{missing_keys}"
         end
       end
 
