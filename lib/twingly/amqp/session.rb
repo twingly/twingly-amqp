@@ -1,3 +1,5 @@
+require "bunny"
+
 module Twingly
   module AMQP
     class Session

@@ -1,4 +1,5 @@
 require "twingly/amqp/connection"
+require "twingly/amqp/ping_options"
 require "json"
 
 module Twingly
