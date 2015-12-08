@@ -21,10 +21,10 @@ Or install it yourself as:
 
 Environment variables:
 
-* `RABBITMQ_N_HOST`
-* `AMQP_USERNAME`
-* `AMQP_PASSWORD`
-* `AMQP_TLS` # Use TLS connection if set
+* `RABBITMQ_N_HOST` - Defaults to `localhost`
+* `AMQP_USERNAME` - Defaults to `guest`
+* `AMQP_PASSWORD` - Defaults to `guest`
+* `AMQP_TLS` - Use TLS connection if set
 
 ### Customize options
 
