@@ -83,15 +83,23 @@ pinger = Twingly::AMQP::Ping.new(
   url_cache:     url_cache, # Optional, see below
 )
 
+# Optional, options can also be given to #ping
+pinger.default_ping_options do |options|
+  options.provider_name = "TestProvider"
+  options.source_ip     = "?.?.?.?"
+  options.priority      = 1
+end
+
 urls = [
   "http://blog.twingly.com",
 ]
 
-options = Twingly::AMQP::PingOptions do
-  provider_name = "a-provider-name"
-  priority      = 1
-  source_ip     = "?.?.?.?"
-end
+# Optional, is merged with the default options above
+options = {
+  provider_name: "a-provider-name",
+  source_ip:     "?.?.?.?",
+  priority:      1,
+}
 
 pinger.ping(urls, options) do |pinged_url|
   # Optional block that gets called for each pinged url

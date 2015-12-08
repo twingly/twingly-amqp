@@ -3,7 +3,11 @@ module Twingly
     class PingOptions
       attr_accessor :provider_name, :source_ip, :priority
 
-      def initialize
+      def initialize(provider_name: nil, source_ip: nil, priority: nil)
+        self.provider_name = provider_name
+        self.source_ip     = source_ip
+        self.priority      = priority
+
         yield self if block_given?
       end
 

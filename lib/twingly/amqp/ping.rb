@@ -14,7 +14,8 @@ module Twingly
         @default_ping_options = PingOptions.new
       end
 
-      def ping(urls, options = PingOptions.new)
+      def ping(urls, options_hash = {})
+        options = PingOptions.new(options_hash)
         options = @default_ping_options.merge(options)
 
         options.validate

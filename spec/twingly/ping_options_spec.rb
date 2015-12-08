@@ -18,6 +18,35 @@ describe Twingly::AMQP::PingOptions do
   end
 
   describe ".new" do
+    context "when given valid options" do
+      let(:options) do
+        {
+          provider_name: provider_name,
+          source_ip:     source_ip,
+          priority:      priority,
+        }
+      end
+      subject { described_class.new(options) }
+
+      it "should set them" do
+        expect(subject.provider_name).to eq(provider_name)
+        expect(subject.source_ip).to eq(source_ip)
+        expect(subject.priority).to eq(priority)
+      end
+    end
+
+    context "when given invalid options" do
+      let(:options) do
+        {
+          not_a_valid_option: 1234,
+        }
+      end
+
+      it "should raise an exception" do
+        expect { described_class.new(options) }.to raise_error(ArgumentError)
+      end
+    end
+
     context "when given a block" do
       it "should yield self" do
         yielded_options = nil

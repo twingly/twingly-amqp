@@ -17,11 +17,11 @@ describe Twingly::AMQP::Ping do
 
     let(:urls)         { "http://example.com" }
     let(:ping_options) do
-      Twingly::AMQP::PingOptions.new do |options|
-        options.provider_name = provider_name
-        options.source_ip     = source_ip
-        options.priority      = priority
-      end
+      {
+        provider_name: provider_name,
+        source_ip:     source_ip,
+        priority:      priority,
+      }
     end
 
     context "with all required options set" do
@@ -63,7 +63,7 @@ describe Twingly::AMQP::Ping do
     end
 
     context "without required options set" do
-      let(:ping_options) { Twingly::AMQP::PingOptions.new }
+      let(:ping_options) { {} }
 
       it "should raise an argument error" do
         expect{ subject.ping(urls, ping_options) }.to raise_error(ArgumentError)
