@@ -28,7 +28,7 @@ Environment variables:
 
 ### Customize options
 
-If you don't have the RabbitMQ hosts, user or password in your ENV you can set them with `Twingly::AMQP::Connection.options=` before you create an instance of `Subscription` or `Ping`.
+If you don't have the RabbitMQ hosts, user or password in your ENV you can set them with `Twingly::AMQP::Connection.options=` before you create an instance of `Subscription` or `Pinger`.
 
 *Options set in `Connection.options=` take precedence over the options defined in `ENV`.*
 
@@ -78,7 +78,7 @@ end
 ### Ping urls
 
 ```ruby
-pinger = Twingly::AMQP::Ping.new(
+pinger = Twingly::AMQP::Pinger.new(
   queue_name:    "provider-ping",
   url_cache:     url_cache, # Optional, see below
 )
@@ -108,7 +108,7 @@ end
 
 #### Url cache
 
-`Twingly::AMQP::Ping.new` can optionally take an url cache which caches the urls and only pings in the urls that isn't already cached. The cache needs to respond to the two following methods:
+`Twingly::AMQP::Pinger.new` can optionally take an url cache which caches the urls and only pings in the urls that isn't already cached. The cache needs to respond to the two following methods:
 
 ```ruby
 class UrlCache

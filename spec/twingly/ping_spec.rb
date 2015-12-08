@@ -1,6 +1,6 @@
 require "amqp_queue_context"
 
-describe Twingly::AMQP::Ping do
+describe Twingly::AMQP::Pinger do
   include_context "amqp queue"
 
   subject do
