@@ -21,10 +21,10 @@ Or install it yourself as:
 
 Environment variables:
 
-* `RABBITMQ_N_HOST`
-* `AMQP_USERNAME`
-* `AMQP_PASSWORD`
-* `AMQP_TLS` # Use TLS connection if set
+* `RABBITMQ_N_HOST` - Defaults to `localhost`
+* `AMQP_USERNAME` - Defaults to `guest`
+* `AMQP_PASSWORD` - Defaults to `guest`
+* `AMQP_TLS` - Use TLS connection if set
 
 ### Customize options
 
@@ -59,7 +59,7 @@ subscription = Twingly::AMQP::Subscription.new(
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
 subscription.before_handle_message { |raw_message_payload| puts raw_message }
 
-subscription.subscribe do |message| # An instance of Twingly::AMQP::Message
+subscription.each_message do |message| # An instance of Twingly::AMQP::Message
   begin
     response = client.post(message.payload.fetch(:url))
 

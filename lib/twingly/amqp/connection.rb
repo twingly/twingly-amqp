@@ -1,5 +1,4 @@
 require "twingly/amqp/session"
-require "bunny"
 
 module Twingly
   module AMQP
