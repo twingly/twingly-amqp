@@ -45,7 +45,6 @@ module Twingly
           sleep 0.5
         end
 
-        puts "Shutting down" if development?
         consumer.cancel
       end
 
@@ -71,18 +70,9 @@ module Twingly
         channel = connection.create_channel(nil, @consumer_threads)
         channel.prefetch(@prefetch)
         channel.on_uncaught_exception do |exception, _|
-          puts exception.message, exception.backtrace if development?
           @on_exception_callback.call(exception)
         end
         channel
-      end
-
-      def development?
-        ruby_env == "development"
-      end
-
-      def ruby_env
-        ENV.fetch("RUBY_ENV")
       end
 
       def queue_options
@@ -99,7 +89,7 @@ module Twingly
       end
 
       def consumer_tag
-        tag_name = [Socket.gethostname, ruby_env].join('-')
+        tag_name = Socket.gethostname
         @channel.generate_consumer_tag(tag_name)
       end
 
