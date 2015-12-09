@@ -24,6 +24,29 @@ describe Twingly::AMQP::Pinger do
       }
     end
 
+    context "when expiration has been set" do
+      let(:ping_expiration) { 2_000 } # ms
+      subject do
+        described_class.new(
+          queue_name:      queue_name,
+          connection:      amqp_connection,
+          ping_expiration: ping_expiration,
+        )
+      end
+
+      before do
+        subject.ping(urls, ping_options)
+      end
+
+      it "the ping should be discarded after it expires" do
+        expect(amqp_queue.message_count).to eq(1)
+
+        sleep ping_expiration / 1000
+
+        expect(amqp_queue.message_count).to eq(0)
+      end
+    end
+
     context "with all required options set" do
       before do
         subject.ping(urls, ping_options)
