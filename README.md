@@ -79,8 +79,10 @@ end
 
 ```ruby
 pinger = Twingly::AMQP::Pinger.new(
-  queue_name:    "provider-ping",
-  url_cache:     url_cache, # Optional, see below
+  queue_name:      "provider-ping",
+  ping_expiration: 2_000,     # Optional, ms, discard the ping if it's still on
+                              #   the queue after this amount of milliseconds
+  url_cache:       url_cache, # Optional, see below
 )
 
 # Optional, options can also be given to #ping

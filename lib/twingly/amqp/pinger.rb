@@ -5,13 +5,14 @@ require "json"
 module Twingly
   module AMQP
     class Pinger
-      def initialize(queue_name:, url_cache: NullCache, connection: nil)
+      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil)
         @queue_name = queue_name
         @url_cache  = url_cache
 
         connection ||= Connection.instance
         @channel = connection.create_channel
 
+        @ping_expiration      = ping_expiration
         @default_ping_options = PingOptions.new
       end
 
@@ -47,6 +48,7 @@ module Twingly
           key: @queue_name,
           persistent: true,
           content_type: "application/json",
+          expiration: @ping_expiration,
         }
       end
 
