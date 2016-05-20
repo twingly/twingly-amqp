@@ -124,6 +124,15 @@ class UrlCache
 end
 ```
 
+### Connection instance
+
+It's possible to get ahold of the current connection, or create a new if no session has been established yet, which may be useful when needing to do things currently not abstracted by the gem.
+
+```ruby
+connection = Twingly::AMQP::Connection.instance
+# connection is a Bunny::Session
+```
+
 ## Tests
 
 The integration tests run by default and require a local RabbitMQ server to run.
