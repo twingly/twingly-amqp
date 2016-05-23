@@ -36,6 +36,7 @@ describe Twingly::AMQP::Pinger do
 
       before do
         subject.ping(urls, ping_options)
+        sleep 1
       end
 
       it "the ping should be discarded after it expires" do
