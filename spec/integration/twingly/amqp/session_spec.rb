@@ -57,6 +57,8 @@ describe Twingly::AMQP::Session do
         after  { ENV.delete("AMQP_TLS") }
 
         it "should enable tls for bunny" do
+          # since we do not have tls setup when running the tests
+          # this will fail with the specified error
           expect { described_class.new }.to raise_error(Bunny::TCPConnectionFailedForAllHosts)
         end
       end

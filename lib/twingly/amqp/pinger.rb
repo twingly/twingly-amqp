@@ -45,7 +45,7 @@ module Twingly
 
       def amqp_publish_options
         {
-          key: @queue_name,
+          routing_key: @queue_name,
           persistent: true,
           content_type: "application/json",
           expiration: @ping_expiration,

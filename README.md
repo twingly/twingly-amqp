@@ -143,6 +143,12 @@ Run tests with
 bundle exec rake
 ```
 
+Run just the unit tests with
+
+```shell
+bundle exec rake spec:unit
+```
+
 ## Release workflow
 
 **Note**: Make sure you are logged in as [twingly][twingly-rubygems] at RubyGems.org.
