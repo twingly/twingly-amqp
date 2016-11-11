@@ -1,0 +1,24 @@
+AllCops:
+  TargetRubyVersion: 2.2
+
+Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/NumericLiterals:
+  Exclude:
+    - 'spec/**/*' # Disable warnings about the urlhashes in the spec files
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingUnderscoreVariable:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 15

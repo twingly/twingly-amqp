@@ -149,6 +149,15 @@ Run just the unit tests with
 bundle exec rake spec:unit
 ```
 
+### RuboCop
+
+To run static code analysis:
+
+  bundle exec rubocop
+
+  # optionally on single file(s)
+  bundle exec rubocop lib/twingly/amqp/*
+
 ## Release workflow
 
 **Note**: Make sure you are logged in as [twingly][twingly-rubygems] at RubyGems.org.
