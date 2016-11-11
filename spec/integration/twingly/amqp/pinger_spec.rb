@@ -80,7 +80,9 @@ describe Twingly::AMQP::Pinger do
       end
 
       context "with an array of URLs" do
-        let(:urls) { %w(http://example.com http://test.se https://another-one.com) }
+        let(:urls) do
+          %w(http://example.com http://test.se https://another-one.com)
+        end
 
         it "should send multiple messages" do
           expect(amqp_queue.message_count).to eq(urls.length)
@@ -92,7 +94,8 @@ describe Twingly::AMQP::Pinger do
       let(:ping_options) { {} }
 
       it "should raise an argument error" do
-        expect{ subject.ping(urls, ping_options) }.to raise_error(ArgumentError)
+        expect { subject.ping(urls, ping_options) }
+          .to raise_error(ArgumentError)
       end
     end
 
@@ -106,7 +109,7 @@ describe Twingly::AMQP::Pinger do
       end
 
       it "should not raise an  error" do
-        expect{ subject.ping(urls) }.not_to raise_error
+        expect { subject.ping(urls) }.not_to raise_error
       end
     end
   end

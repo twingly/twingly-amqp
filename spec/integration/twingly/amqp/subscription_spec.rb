@@ -5,7 +5,7 @@ describe Twingly::AMQP::Subscription do
   SUBSCRIPTION_TIMEOUT = 5
 
   around(:each) do |example|
-    Timeout::timeout(SUBSCRIPTION_TIMEOUT) do
+    Timeout.timeout(SUBSCRIPTION_TIMEOUT) do
       example.run
     end
   end
@@ -25,7 +25,7 @@ describe Twingly::AMQP::Subscription do
     described_class.new(
       queue_name:     queue_name,
       exchange_topic: exchange_topic,
-      routing_key:    routing_key
+      routing_key:    routing_key,
     )
   end
 

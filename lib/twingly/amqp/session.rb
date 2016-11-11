@@ -5,9 +5,9 @@ module Twingly
     class Session
       attr_reader :connection, :options
 
-      DEFAULT_USER  = "guest"
-      DEFAULT_PASS  = "guest"
-      DEFAULT_HOSTS = ["localhost"]
+      DEFAULT_USER  = "guest".freeze
+      DEFAULT_PASS  = "guest".freeze
+      DEFAULT_HOSTS = ["localhost"].freeze
 
       def initialize(options = {})
         @options    = options
@@ -37,7 +37,7 @@ module Twingly
       end
 
       def tls?
-        ENV.has_key?("AMQP_TLS")
+        ENV.key?("AMQP_TLS")
       end
 
       def user_from_env
@@ -50,7 +50,9 @@ module Twingly
 
       def hosts_from_env
         # Matches env keys like `RABBITMQ_01_HOST`
-        environment_keys_with_host = ENV.keys.select { |key| key =~ /^rabbitmq_\d+_host$/i }
+        environment_keys_with_host = ENV.keys.select do |key|
+          key =~ /^rabbitmq_\d+_host$/i
+        end
         hosts = environment_keys_with_host.map { |key| ENV[key] }
 
         return DEFAULT_HOSTS if hosts.empty?
