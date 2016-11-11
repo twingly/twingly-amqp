@@ -22,6 +22,16 @@ module Twingly
         @exchange.publish(payload, opts)
       end
 
+      # only used by tests to avoid sleeping
+      def publish_with_confirm(message)
+        channel = @exchange.channel
+        channel.confirm_select unless channel.using_publisher_confirmations?
+
+        publish(message)
+
+        @exchange.wait_for_confirms
+      end
+
       def publish_options
         yield options
       end

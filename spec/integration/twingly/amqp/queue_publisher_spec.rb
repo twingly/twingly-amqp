@@ -16,8 +16,7 @@ describe Twingly::AMQP::QueuePublisher do
     [{ some: "data" }, [[:some, "data"]]].each do |payload|
       context "when given a hash-like payload '#{payload}'" do
         before do
-          subject.publish(payload)
-          sleep 1
+          subject.publish_with_confirm(payload)
         end
 
         let(:expected_payload) { { some: "data" } }
@@ -47,8 +46,7 @@ describe Twingly::AMQP::QueuePublisher do
           options.app_id = app_id
         end
 
-        subject.publish(payload)
-        sleep 1
+        subject.publish_with_confirm(payload)
       end
 
       it "does honor the customization" do
