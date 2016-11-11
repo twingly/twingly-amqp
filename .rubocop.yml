@@ -7,10 +7,6 @@ Documentation:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Style/NumericLiterals:
-  Exclude:
-    - 'spec/**/*' # Disable warnings about the urlhashes in the spec files
-
 Style/TrailingCommaInLiteral:
   EnforcedStyleForMultiline: comma
 
