@@ -18,8 +18,8 @@ module Twingly
         raise ArgumentError unless message.respond_to?(:to_h)
 
         payload = message.to_h.to_json
-        options = @options.to_h
-        @exchange.publish(payload, options)
+        opts    = @options.to_h
+        @exchange.publish(payload, opts)
       end
 
       def publish_options
@@ -34,8 +34,6 @@ module Twingly
             content_type: "application/json",
             persistent: true,
           )
-
-        @options
       end
     end
   end
