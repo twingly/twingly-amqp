@@ -14,12 +14,11 @@ module Twingly
         @exchange = connection.create_channel.default_exchange
       end
 
-      def publish(hash_payload)
-        raise ArgumentError unless hash_payload.is_a?(Hash)
+      def publish(message)
+        raise ArgumentError unless message.respond_to?(:to_h)
 
-        payload = hash_payload.to_json
+        payload = message.to_h.to_json
         options = @options.to_h
-
         @exchange.publish(payload, options)
       end
 

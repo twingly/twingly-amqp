@@ -13,17 +13,21 @@ describe Twingly::AMQP::QueuePublisher do
   end
 
   describe "#publish" do
-    context "when given a hash payload" do
-      before do
-        subject.publish(payload)
-        sleep 1
-      end
+    [{ some: "data" }, [[:some, "data"]]].each do |payload|
+      context "when given a hash-like payload '#{payload}'" do
+        before do
+          subject.publish(payload)
+          sleep 1
+        end
 
-      it "does publish the message" do
-        _, _, json_payload = amqp_queue.pop
+        let(:expected_payload) { { some: "data" } }
 
-        actual_payload = JSON.parse(json_payload, symbolize_names: true)
-        expect(actual_payload).to eq(payload)
+        it "does publish the message" do
+          _, _, json_payload = amqp_queue.pop
+
+          actual_payload = JSON.parse(json_payload, symbolize_names: true)
+          expect(actual_payload).to eq(expected_payload)
+        end
       end
     end
 
