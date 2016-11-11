@@ -43,6 +43,14 @@ Twingly::AMQP::Connection.options = {
 }
 ```
 
+To configure a general logger for Twingly::AMQP, you may use:
+
+```ruby
+Twingly::AMQP.configure do |config|
+  config.logger = Logger.new(STDOUT)
+end
+```
+
 [ruby-bunny]: http://rubybunny.info/articles/connecting.html
 
 ### Subscribe to a queue

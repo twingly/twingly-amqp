@@ -95,6 +95,28 @@ describe Twingly::AMQP::Subscription do
 
         expect(on_exception_called).to eq(true)
       end
+
+      context "and a logger is configured" do
+        let(:logger) { instance_double("Logger") }
+
+        before do
+          Twingly::AMQP.configure do |config|
+            config.logger = logger
+          end
+        end
+
+        it "logs the error" do
+          expect(logger).to receive(:error)
+
+          exchange.publish("this is not json", routing_key: routing_key)
+          sleep 1
+
+          subject.on_exception do |_|
+            subject.cancel!
+          end
+          subject.each_message { |_| subject.cancel! }
+        end
+      end
     end
 
     context "without exchange_topic and routing_key" do
