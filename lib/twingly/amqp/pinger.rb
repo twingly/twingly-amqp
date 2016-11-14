@@ -1,18 +1,20 @@
 require "twingly/amqp/connection"
 require "twingly/amqp/ping_options"
+require "twingly/amqp/queue_publisher"
 require "json"
 
 module Twingly
   module AMQP
     class Pinger
       def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil)
-        @queue_name = queue_name
-        @url_cache  = url_cache
-
+        @url_cache = url_cache
         connection ||= Connection.instance
-        @channel = connection.create_channel
 
-        @ping_expiration      = ping_expiration
+        @publisher = QueuePublisher.new(queue_name: queue_name, connection: connection)
+        @publisher.publish_options do |options|
+          options.expiration = ping_expiration
+        end
+
         @default_ping_options = PingOptions.new
       end
 
@@ -39,17 +41,9 @@ module Twingly
       private
 
       def publish(url, options)
-        payload = message(url, options).to_json
-        @channel.default_exchange.publish(payload, amqp_publish_options)
-      end
+        payload = message(url, options)
 
-      def amqp_publish_options
-        {
-          routing_key: @queue_name,
-          persistent: true,
-          content_type: "application/json",
-          expiration: @ping_expiration,
-        }
+        @publisher.publish(payload)
       end
 
       def message(url, options)

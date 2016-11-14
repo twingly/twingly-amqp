@@ -75,6 +75,19 @@ subscription.each_message do |message| # An instance of Twingly::AMQP::Message
 end
 ```
 
+### Publish to a queue
+
+```ruby
+publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
+
+publisher.publish_options do |options|
+  options.expiration = 1000
+  options.priority   = 1
+end
+
+publisher.publish({ my: "data" })
+```
+
 ### Ping urls
 
 ```ruby
