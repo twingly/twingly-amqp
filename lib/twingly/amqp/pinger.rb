@@ -6,7 +6,7 @@ require "json"
 module Twingly
   module AMQP
     class Pinger
-      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil)
+      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil, confirm_publish: false)
         @url_cache = url_cache
         connection ||= Connection.instance
 
@@ -16,9 +16,10 @@ module Twingly
         end
 
         @default_ping_options = PingOptions.new
+        @confirm_publish = confirm_publish
       end
 
-      def ping(urls, options_hash = {}, confirm_publish: false)
+      def ping(urls, options_hash = {})
         options = PingOptions.new(options_hash)
         options = @default_ping_options.merge(options)
 
@@ -26,7 +27,7 @@ module Twingly
 
         Array(urls).each do |url|
           unless cached?(url)
-            publish(url, options, confirm_publish)
+            publish(url, options)
             cache!(url)
 
             yield url if block_given?
@@ -40,10 +41,10 @@ module Twingly
 
       private
 
-      def publish(url, options, confirm_publish)
+      def publish(url, options)
         payload = message(url, options)
 
-        if confirm_publish
+        if @confirm_publish
           @publisher.publish_with_confirm(payload)
         else
           @publisher.publish(payload)

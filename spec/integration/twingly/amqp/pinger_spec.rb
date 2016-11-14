@@ -7,6 +7,7 @@ describe Twingly::AMQP::Pinger do
     described_class.new(
       queue_name: queue_name,
       connection: amqp_connection,
+      confirm_publish: true,
     )
   end
 
@@ -31,11 +32,12 @@ describe Twingly::AMQP::Pinger do
           queue_name:      queue_name,
           connection:      amqp_connection,
           ping_expiration: ping_expiration,
+          confirm_publish: true,
         )
       end
 
       before do
-        subject.ping(urls, ping_options, confirm_publish: true)
+        subject.ping(urls, ping_options)
       end
 
       it "the ping should be discarded after it expires" do
@@ -49,7 +51,7 @@ describe Twingly::AMQP::Pinger do
 
     context "with all required options set" do
       before do
-        subject.ping(urls, ping_options, confirm_publish: true)
+        subject.ping(urls, ping_options)
       end
 
       context "with one URL" do
