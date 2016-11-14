@@ -35,10 +35,7 @@ describe Twingly::AMQP::Pinger do
       end
 
       before do
-        subject.ping(urls, ping_options)
-
-        # wait until the ping has been published to target queue
-        sleep 1
+        subject.ping(urls, ping_options, confirm_publish: true)
       end
 
       it "the ping should be discarded after it expires" do
@@ -52,8 +49,7 @@ describe Twingly::AMQP::Pinger do
 
     context "with all required options set" do
       before do
-        subject.ping(urls, ping_options)
-        sleep 1
+        subject.ping(urls, ping_options, confirm_publish: true)
       end
 
       context "with one URL" do

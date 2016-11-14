@@ -18,7 +18,7 @@ module Twingly
         @default_ping_options = PingOptions.new
       end
 
-      def ping(urls, options_hash = {})
+      def ping(urls, options_hash = {}, confirm_publish: false)
         options = PingOptions.new(options_hash)
         options = @default_ping_options.merge(options)
 
@@ -26,7 +26,7 @@ module Twingly
 
         Array(urls).each do |url|
           unless cached?(url)
-            publish(url, options)
+            publish(url, options, confirm_publish)
             cache!(url)
 
             yield url if block_given?
@@ -40,10 +40,14 @@ module Twingly
 
       private
 
-      def publish(url, options)
+      def publish(url, options, confirm_publish)
         payload = message(url, options)
 
-        @publisher.publish(payload)
+        if confirm_publish
+          @publisher.publish_with_confirm(payload)
+        else
+          @publisher.publish(payload)
+        end
       end
 
       def message(url, options)
