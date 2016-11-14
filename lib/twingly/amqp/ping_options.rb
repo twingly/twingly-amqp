@@ -23,7 +23,7 @@ module Twingly
       def validate
         missing_keys = to_h.select { |_, value| value.to_s.empty? }.keys
         if missing_keys.any?
-          fail ArgumentError, "Required options not set: #{missing_keys}"
+          raise ArgumentError, "Required options not set: #{missing_keys}"
         end
       end
 

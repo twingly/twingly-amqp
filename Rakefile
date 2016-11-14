@@ -21,5 +21,6 @@ begin
       task.pattern = "spec/unit/**/*_spec.rb"
     end
   end
-rescue LoadError
+rescue LoadError => error
+  warn error.message
 end

@@ -1,5 +1,5 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'twingly/amqp'
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require "twingly/amqp"
 
 ENV["AMQP_USERNAME"]    ||= "guest"
 ENV["AMQP_PASSWORD"]    ||= "guest"
