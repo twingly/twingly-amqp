@@ -11,4 +11,14 @@ describe Twingly::AMQP::Connection do
       end
     end
   end
+
+  describe ".options=" do
+    let(:options) { { hosts: %w(host1 host2) } }
+
+    it "updates the configuration" do
+      described_class.options = options
+
+      expect(Twingly::AMQP.configuration.connection_options).to eq(options)
+    end
+  end
 end

@@ -16,7 +16,11 @@ module Twingly
     end
 
     def self.configuration
-      @configuration ||= OpenStruct.new(logger: NullLogger.new)
+      @configuration ||=
+        OpenStruct.new(
+          logger: NullLogger.new,
+          connection_options: {},
+        )
     end
 
     def self.configure
