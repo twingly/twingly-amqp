@@ -108,7 +108,7 @@ describe Twingly::AMQP::Pinger do
         end
       end
 
-      it "should not raise an  error" do
+      it "should not raise an error" do
         expect { subject.ping(urls) }.not_to raise_error
       end
     end
