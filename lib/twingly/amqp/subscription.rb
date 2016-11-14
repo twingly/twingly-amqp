@@ -20,8 +20,8 @@ module Twingly
           @queue.bind(exchange, routing_key: @routing_key)
         end
 
-        @before_handle_message_callback = Proc.new {}
-        @on_exception_callback          = Proc.new {}
+        @before_handle_message_callback = proc {}
+        @on_exception_callback          = proc {}
       end
 
       def each_message(&block)
@@ -41,9 +41,7 @@ module Twingly
         end
 
         # The consumer isn't blocking, so we wait here
-        until cancel? do
-          sleep 0.5
-        end
+        sleep 0.5 until cancel?
 
         consumer.cancel
       end

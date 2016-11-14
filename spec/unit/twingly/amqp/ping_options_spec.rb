@@ -96,7 +96,8 @@ describe Twingly::AMQP::PingOptions do
       end
 
       it "should raise an exception" do
-        expect { subject.validate }.to raise_error(ArgumentError, /provider_name/)
+        expect { subject.validate }
+          .to raise_error(ArgumentError, /provider_name/)
       end
     end
 
@@ -130,7 +131,7 @@ describe Twingly::AMQP::PingOptions do
   describe "#merge" do
     let(:other_provider_name) { "OtherProvider" }
     let(:other_source_ip)     { nil }
-    let(:other)  do
+    let(:other) do
       described_class.new do |options|
         options.provider_name = other_provider_name
         options.source_ip     = other_source_ip

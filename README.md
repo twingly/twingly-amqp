@@ -83,6 +83,19 @@ subscription.each_message do |message| # An instance of Twingly::AMQP::Message
 end
 ```
 
+### Publish to a queue
+
+```ruby
+publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
+
+publisher.publish_options do |options|
+  options.expiration = 1000
+  options.priority   = 1
+end
+
+publisher.publish({ my: "data" })
+```
+
 ### Ping urls
 
 ```ruby
@@ -156,6 +169,15 @@ Run just the unit tests with
 ```shell
 bundle exec rake spec:unit
 ```
+
+### RuboCop
+
+To run static code analysis:
+
+  bundle exec rubocop
+
+  # optionally on single file(s)
+  bundle exec rubocop lib/twingly/amqp/*
 
 ## Release workflow
 

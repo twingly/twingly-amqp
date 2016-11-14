@@ -8,21 +8,24 @@ describe Twingly::AMQP::Session do
         {
           user:  amqp_user_from_env,
           pass:  amqp_pass_from_env,
-          hosts: [ amqp_host_from_env ],
+          hosts: [amqp_host_from_env],
         }
       end
 
       it "should read them from ENV" do
         expect(ENV).to receive(:fetch).at_least(:once).and_call_original
 
-        expect(Bunny).to receive(:new).with(hash_including(amqp_options_from_env)).and_call_original
+        expect(Bunny)
+          .to receive(:new)
+          .with(hash_including(amqp_options_from_env))
+          .and_call_original
 
         described_class.new
       end
     end
 
     context "with arguments" do
-      let(:hosts) { [ "localhost" ] }
+      let(:hosts) { ["localhost"] }
 
       context "with hosts array" do
         let(:rabbitmq_host_env_name) { "RABBITMQ_01_HOST" }
@@ -46,7 +49,10 @@ describe Twingly::AMQP::Session do
         end
 
         it "should pass them all to bunny" do
-          expect(Bunny).to receive(:new).with(hash_including(options)).and_call_original
+          expect(Bunny)
+            .to receive(:new)
+            .with(hash_including(options))
+            .and_call_original
 
           described_class.new(options)
         end
@@ -59,7 +65,8 @@ describe Twingly::AMQP::Session do
         it "should enable tls for bunny" do
           # since we do not have tls setup when running the tests
           # this will fail with the specified error
-          expect { described_class.new }.to raise_error(Bunny::TCPConnectionFailedForAllHosts)
+          expect { described_class.new }
+            .to raise_error(Bunny::TCPConnectionFailedForAllHosts)
         end
       end
     end

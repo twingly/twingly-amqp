@@ -1,5 +1,5 @@
 shared_context "amqp queue" do
-  let(:queue_name)    { "twingly-amqp.test" }
+  let(:queue_name) { "twingly-amqp.test" }
 
   let(:amqp_connection) do
     Twingly::AMQP::Connection.instance
