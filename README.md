@@ -80,7 +80,7 @@ end
 ```ruby
 publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
 
-publisher.publish_options do |options|
+publisher.configure_publish_options do |options|
   options.expiration = 1000
   options.priority   = 1
 end
