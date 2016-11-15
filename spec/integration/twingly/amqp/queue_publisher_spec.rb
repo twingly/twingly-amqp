@@ -42,7 +42,7 @@ describe Twingly::AMQP::QueuePublisher do
       let(:app_id) { "test-app" }
 
       before do
-        subject.publish_options do |options|
+        subject.configure_publish_options do |options|
           options.app_id = app_id
         end
 
@@ -59,21 +59,21 @@ describe Twingly::AMQP::QueuePublisher do
 
   describe "#publish_options" do
     it "yields with OpenStruct object" do
-      expect { |block| subject.publish_options(&block) }
+      expect { |block| subject.configure_publish_options(&block) }
         .to yield_with_args(OpenStruct)
     end
 
     let(:default_content_type) { "application/json" }
     let(:default_persistent)   { true }
     it "has default values" do
-      subject.publish_options do |options|
+      subject.configure_publish_options do |options|
         expect(options.content_type).to eq(default_content_type)
         expect(options.persistent).to eq(default_persistent)
       end
     end
 
     it "accepts any value" do
-      subject.publish_options do |options|
+      subject.configure_publish_options do |options|
         expect { options.anything = "something" }.to_not raise_error
       end
     end

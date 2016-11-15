@@ -6,9 +6,7 @@ module Twingly
   module AMQP
     class QueuePublisher
       def initialize(queue_name:, connection: nil)
-        publish_options do |options|
-          options.routing_key = queue_name
-        end
+        options.routing_key = queue_name
 
         connection ||= Connection.instance
         @exchange = connection.create_channel.default_exchange
@@ -18,7 +16,7 @@ module Twingly
         raise ArgumentError unless message.respond_to?(:to_h)
 
         payload = message.to_h.to_json
-        opts    = @options.to_h
+        opts    = options.to_h
         @exchange.publish(payload, opts)
       end
 
@@ -32,7 +30,7 @@ module Twingly
         @exchange.wait_for_confirms
       end
 
-      def publish_options
+      def configure_publish_options
         yield options
       end
 

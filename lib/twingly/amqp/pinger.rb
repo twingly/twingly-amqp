@@ -6,16 +6,17 @@ require "json"
 module Twingly
   module AMQP
     class Pinger
-      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil)
+      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil, confirm_publish: false)
         @url_cache = url_cache
         connection ||= Connection.instance
 
         @publisher = QueuePublisher.new(queue_name: queue_name, connection: connection)
-        @publisher.publish_options do |options|
+        @publisher.configure_publish_options do |options|
           options.expiration = ping_expiration
         end
 
         @default_ping_options = PingOptions.new
+        @confirm_publish = confirm_publish
       end
 
       def ping(urls, options_hash = {})
@@ -43,7 +44,11 @@ module Twingly
       def publish(url, options)
         payload = message(url, options)
 
-        @publisher.publish(payload)
+        if @confirm_publish
+          @publisher.publish_with_confirm(payload)
+        else
+          @publisher.publish(payload)
+        end
       end
 
       def message(url, options)
