@@ -57,7 +57,7 @@ describe Twingly::AMQP::QueuePublisher do
     end
   end
 
-  describe "#publish_options" do
+  describe "#configure_publish_options" do
     it "yields with OpenStruct object" do
       expect { |block| subject.configure_publish_options(&block) }
         .to yield_with_args(OpenStruct)
