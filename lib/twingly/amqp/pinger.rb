@@ -11,7 +11,7 @@ module Twingly
         connection ||= Connection.instance
 
         @publisher = QueuePublisher.new(queue_name: queue_name, connection: connection)
-        @publisher.publish_options do |options|
+        @publisher.configure_publish_options do |options|
           options.expiration = ping_expiration
         end
 

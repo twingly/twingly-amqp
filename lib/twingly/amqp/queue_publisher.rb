@@ -30,7 +30,7 @@ module Twingly
         @exchange.wait_for_confirms
       end
 
-      def publish_options
+      def configure_publish_options
         yield options
       end
 
