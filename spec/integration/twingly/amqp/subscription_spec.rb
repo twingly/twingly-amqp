@@ -110,7 +110,7 @@ describe Twingly::AMQP::Subscription do
           expect(logger).to receive(:error)
 
           exchange.publish("this is not json", routing_key: routing_key)
-          sleep 1
+          exchange.wait_for_confirms
 
           subject.on_exception do |_|
             subject.cancel!
