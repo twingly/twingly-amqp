@@ -28,7 +28,7 @@ Environment variables:
 
 ### Customize options
 
-If you don't have the RabbitMQ hosts, user or password in your ENV you can set them via `Twingly::AMQP.configure.connection_options` before you create an instance of `Subscription` or `Pinger`. All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
+If you don't have the RabbitMQ hosts, user or password in your ENV you can set them via the configuration block `Twingly::AMQP.configure`, see example below, before you create an instance of `Subscription` or `Pinger`. All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
 
 *Options set via `configure.connection_options` take precedence over the options defined in `ENV`.*
 
@@ -84,8 +84,10 @@ end
 publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
 
 publisher.configure_publish_options do |options|
-  options.expiration = 1000
-  options.priority   = 1
+  options.content_type = "application/json" # Default
+  options.persistent   = true               # Default
+  options.expiration   = 1000
+  options.priority     = 1
 end
 
 publisher.publish({ my: "data" })
@@ -101,13 +103,15 @@ exchange_options = {
 
 publisher = Twingly::AMQP::TopicExchangePublisher.new(
   exchange_name: "my_exchange",
-  routing_key: "my_key",        # Optional
-  opts: exchange_options,       # Optional
+  routing_key:   "my_key",         # Optional
+  opts:          exchange_options, # Optional
 )
 
-publisher.publish_options do |options|
-  options.expiration = 1000
-  options.priority   = 1
+publisher.configure_publish_options do |options|
+  options.content_type = "application/json" # Default
+  options.persistent   = true               # Default
+  options.expiration   = 1000
+  options.priority     = 1
 end
 
 publisher.publish({ my: "data" })
