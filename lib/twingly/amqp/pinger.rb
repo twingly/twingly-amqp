@@ -1,6 +1,6 @@
 require "twingly/amqp/connection"
 require "twingly/amqp/ping_options"
-require "twingly/amqp/queue_publisher"
+require "twingly/amqp/direct_exchange_publisher"
 require "json"
 
 module Twingly
@@ -10,7 +10,7 @@ module Twingly
         @url_cache = url_cache
         connection ||= Connection.instance
 
-        @publisher = QueuePublisher.new(queue_name: queue_name, connection: connection)
+        @publisher = DirectExchangePublisher.new(queue_name: queue_name, connection: connection)
         @publisher.configure_publish_options do |options|
           options.expiration = ping_expiration
         end

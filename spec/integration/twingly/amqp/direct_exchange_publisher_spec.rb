@@ -1,6 +1,6 @@
 require "amqp_queue_context"
 
-describe Twingly::AMQP::QueuePublisher do
+describe Twingly::AMQP::DirectExchangePublisher do
   include_context "amqp queue"
 
   let(:payload) { { some: "data" } }
@@ -21,7 +21,7 @@ describe Twingly::AMQP::QueuePublisher do
 
         let(:expected_payload) { { some: "data" } }
 
-        it "does publish the message" do
+        it "does publish the message to the default exchange" do
           _, _, json_payload = amqp_queue.pop
 
           actual_payload = JSON.parse(json_payload, symbolize_names: true)

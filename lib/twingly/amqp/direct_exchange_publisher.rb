@@ -4,12 +4,14 @@ require "ostruct"
 
 module Twingly
   module AMQP
-    class QueuePublisher
-      def initialize(queue_name:, connection: nil)
+    DEFAULT_EXCHANGE_NAME = "".freeze
+
+    class DirectExchangePublisher
+      def initialize(queue_name:, exchange_name: DEFAULT_EXCHANGE_NAME, connection: nil)
         options.routing_key = queue_name
 
         connection ||= Connection.instance
-        @exchange = connection.create_channel.default_exchange
+        @exchange = connection.create_channel.direct(exchange_name)
       end
 
       def publish(message)
