@@ -32,6 +32,17 @@ describe Twingly::AMQP::Session do
           ENV["RABBITMQ_01_HOST"] = host
         end
 
+        let(:default_host) { { hosts: ["localhost"] } }
+
+        it "should use the default host" do
+          expect(Bunny)
+          .to receive(:new)
+          .with(hash_including(default_host))
+          .and_call_original
+
+          described_class.new
+        end
+
         it "should not raise an error" do
           expect { described_class.new }.not_to raise_error
         end
