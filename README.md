@@ -96,10 +96,11 @@ exchange_options = {
   durable: true,
 }
 
-publisher = Twingly::AMQP::TopicExchangePublisher.new(exchange_name: "my_exchange",
-                                                      routing_key: "my_key", # optional
-                                                      opts: exchange_options # optional
-                                                      )
+publisher = Twingly::AMQP::TopicExchangePublisher.new(
+  exchange_name: "my_exchange",
+  routing_key: "my_key",        # Optional
+  opts: exchange_options,       # Optional
+)
 
 publisher.publish_options do |options|
   options.expiration = 1000
