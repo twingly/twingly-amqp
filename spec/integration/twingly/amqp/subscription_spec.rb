@@ -18,6 +18,7 @@ describe Twingly::AMQP::Subscription do
   let(:routing_key)    { "url.blog" }
   let(:exchange) do
     channel = amqp_connection.create_channel
+    channel.confirm_select
     channel.topic(exchange_topic, durable: true)
   end
 
@@ -33,7 +34,7 @@ describe Twingly::AMQP::Subscription do
     context "when message has same routing key" do
       it "should receive the message published on the exchange" do
         exchange.publish(payload_json, routing_key: routing_key)
-        sleep 1
+        exchange.wait_for_confirms
 
         received_url = nil
         subject.each_message do |message|
@@ -54,7 +55,7 @@ describe Twingly::AMQP::Subscription do
         end
 
         exchange.publish(payload_json, routing_key: routing_key)
-        sleep 1
+        exchange.wait_for_confirms
 
         received_url = nil
         subject.each_message do |message|
@@ -69,7 +70,7 @@ describe Twingly::AMQP::Subscription do
     context "when a before_handle_message callback has been set" do
       it "should call the callback" do
         exchange.publish(payload_json, routing_key: routing_key)
-        sleep 1
+        exchange.wait_for_confirms
 
         unparsed_payload = nil
         subject.before_handle_message do |raw_payload|
@@ -84,7 +85,7 @@ describe Twingly::AMQP::Subscription do
     context "when an error is raised" do
       it "should call error callback" do
         exchange.publish("this is not json", routing_key: routing_key)
-        sleep 1
+        exchange.wait_for_confirms
 
         on_exception_called = false
         subject.on_exception do |_|
@@ -95,11 +96,35 @@ describe Twingly::AMQP::Subscription do
 
         expect(on_exception_called).to eq(true)
       end
+
+      context "and a logger is configured" do
+        let(:logger) { instance_double("Logger") }
+
+        before do
+          Twingly::AMQP.configure do |config|
+            config.logger = logger
+          end
+        end
+
+        it "logs the error" do
+          expect(logger).to receive(:error)
+
+          exchange.publish("this is not json", routing_key: routing_key)
+          exchange.wait_for_confirms
+
+          subject.on_exception do |_|
+            subject.cancel!
+          end
+          subject.each_message { |_| subject.cancel! }
+        end
+      end
     end
 
     context "without exchange_topic and routing_key" do
       let(:default_exchange) do
-        amqp_connection.create_channel.default_exchange
+        channel = amqp_connection.create_channel
+        channel.confirm_select
+        channel.default_exchange
       end
 
       subject! do
@@ -110,7 +135,7 @@ describe Twingly::AMQP::Subscription do
 
       it "should subscribe to default exchange" do
         default_exchange.publish(payload_json, routing_key: queue_name)
-        sleep 1
+        exchange.wait_for_confirms
 
         received_url = nil
         subject.each_message do |message|

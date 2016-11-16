@@ -68,6 +68,7 @@ module Twingly
         channel = connection.create_channel(nil, @consumer_threads)
         channel.prefetch(@prefetch)
         channel.on_uncaught_exception do |exception, _|
+          Twingly::AMQP.configuration.logger.error(exception)
           @on_exception_callback.call(exception)
         end
         channel

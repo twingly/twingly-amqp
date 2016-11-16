@@ -22,6 +22,31 @@ describe Twingly::AMQP::Session do
 
         described_class.new
       end
+
+      context "without host environment variable" do
+        around do |spec|
+          host = ENV.delete("RABBITMQ_01_HOST")
+
+          spec.run
+
+          ENV["RABBITMQ_01_HOST"] = host
+        end
+
+        let(:default_host) { { hosts: ["localhost"] } }
+
+        it "should use the default host" do
+          expect(Bunny)
+            .to receive(:new)
+            .with(hash_including(default_host))
+            .and_call_original
+
+          described_class.new
+        end
+
+        it "should not raise an error" do
+          expect { described_class.new }.not_to raise_error
+        end
+      end
     end
 
     context "with arguments" do
@@ -67,6 +92,16 @@ describe Twingly::AMQP::Session do
           # this will fail with the specified error
           expect { described_class.new }
             .to raise_error(Bunny::TCPConnectionFailedForAllHosts)
+        end
+      end
+
+      context "when hosts array is frozen" do
+        let(:frozen_hosts) { ["localhost"].freeze }
+
+        it "should not raise an error" do
+          expect do
+            described_class.new(hosts: frozen_hosts)
+          end.not_to raise_error
         end
       end
     end
