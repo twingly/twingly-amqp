@@ -78,10 +78,10 @@ subscription.each_message do |message| # An instance of Twingly::AMQP::Message
 end
 ```
 
-### Publish to a queue
+### Publish to a queue on the default exchange
 
 ```ruby
-publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
+publisher = Twingly::AMQP::DefaultExchangePublisher.new(queue_name: "my_queue")
 
 publisher.configure_publish_options do |options|
   options.expiration = 1000
