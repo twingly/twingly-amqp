@@ -83,6 +83,16 @@ describe Twingly::AMQP::Session do
             .to raise_error(Bunny::TCPConnectionFailedForAllHosts)
         end
       end
+
+      context "when hosts array is frozen" do
+        let(:frozen_hosts) { ["localhost"].freeze }
+
+        it "should not raise an error" do
+          expect do
+            described_class.new(hosts: frozen_hosts)
+          end.not_to raise_error
+        end
+      end
     end
   end
 end

@@ -27,6 +27,8 @@ module Twingly
         options[:pass]  ||= password_from_env
         options[:hosts] ||= hosts_from_env
 
+        options[:hosts] = options.fetch(:hosts).dup
+
         default_connection_options.merge(options)
       end
 
@@ -55,7 +57,7 @@ module Twingly
         end
         hosts = environment_keys_with_host.map { |key| ENV[key] }
 
-        return DEFAULT_HOSTS.dup if hosts.empty?
+        return DEFAULT_HOSTS if hosts.empty?
 
         hosts
       end
