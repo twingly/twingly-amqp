@@ -28,19 +28,22 @@ Environment variables:
 
 ### Customize options
 
-If you don't have the RabbitMQ hosts, user or password in your ENV you can set them with `Twingly::AMQP::Connection.options=` before you create an instance of `Subscription` or `Pinger`.
+If you don't have the RabbitMQ hosts, user or password in your ENV you can set them via `Twingly::AMQP.configure.connection_options` before you create an instance of `Subscription` or `Pinger`. All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
 
-*Options set in `Connection.options=` take precedence over the options defined in `ENV`.*
+*Options set via `configure.connection_options` take precedence over the options defined in `ENV`.*
 
-All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
+In addition to `connection_options` you may also configure an error logger via `logger`:
 
 ```ruby
-Twingly::AMQP::Connection.options = {
-  hosts: %w(localhost),
-  user: "a-user",
-  pass: "1234",
-  # ...
-}
+Twingly::AMQP.configure do |config|
+  config.logger = Logger.new(STDOUT)
+  config.connection_options = {
+    hosts: %w(localhost),
+    user: "a-user",
+    pass: "1234",
+    # ...
+  }
+end
 ```
 
 [ruby-bunny]: http://rubybunny.info/articles/connecting.html
