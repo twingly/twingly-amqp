@@ -91,6 +91,28 @@ end
 publisher.publish({ my: "data" })
 ```
 
+### Publish to a topic exchange
+
+```ruby
+# passed to Bunny::Channel#topic
+exchange_options = {
+  durable: true,
+}
+
+publisher = Twingly::AMQP::TopicExchangePublisher.new(
+  exchange_name: "my_exchange",
+  routing_key: "my_key",        # Optional
+  opts: exchange_options,       # Optional
+)
+
+publisher.publish_options do |options|
+  options.expiration = 1000
+  options.priority   = 1
+end
+
+publisher.publish({ my: "data" })
+```
+
 ### Ping urls
 
 ```ruby

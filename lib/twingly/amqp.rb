@@ -5,6 +5,7 @@ require "twingly/amqp/subscription"
 require "twingly/amqp/ping_options"
 require "twingly/amqp/pinger"
 require "twingly/amqp/queue_publisher"
+require "twingly/amqp/topic_exchange_publisher"
 require "twingly/amqp/null_logger"
 
 require "ostruct"
