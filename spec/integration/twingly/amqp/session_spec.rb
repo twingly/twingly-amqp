@@ -36,9 +36,9 @@ describe Twingly::AMQP::Session do
 
         it "should use the default host" do
           expect(Bunny)
-          .to receive(:new)
-          .with(hash_including(default_host))
-          .and_call_original
+            .to receive(:new)
+            .with(hash_including(default_host))
+            .and_call_original
 
           described_class.new
         end
