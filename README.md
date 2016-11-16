@@ -78,10 +78,13 @@ subscription.each_message do |message| # An instance of Twingly::AMQP::Message
 end
 ```
 
-### Publish to a queue
+### Publish to a direct exchange
 
 ```ruby
-publisher = Twingly::AMQP::QueuePublisher.new(queue_name: "my_queue")
+publisher = Twingly::AMQP::DirectExchangePublisher.new(
+  queue_name: "my_queue"
+  exchange_name: "my_exchange", # Optional, if omitted messages are published to the default exchange
+)
 
 publisher.configure_publish_options do |options|
   options.expiration = 1000
