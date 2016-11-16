@@ -5,7 +5,7 @@ require "ostruct"
 module Twingly
   module AMQP
     class TopicExchangePublisher
-      def initialize(exchange_name:, routing_key:, connection: nil, opts: {})
+      def initialize(exchange_name:, routing_key: nil, connection: nil, opts: {})
         options.routing_key = routing_key
 
         connection ||= Connection.instance

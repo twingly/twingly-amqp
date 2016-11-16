@@ -6,15 +6,9 @@ describe Twingly::AMQP::TopicExchangePublisher do
   let(:payload) { { some: "data" } }
 
   subject do
-    exchange_options = {
-      durable: false,
-    }
-
     described_class.new(
       exchange_name: exchange_name,
-      routing_key: routing_key,
       connection: amqp_connection,
-      opts: exchange_options,
     )
   end
 
@@ -59,6 +53,30 @@ describe Twingly::AMQP::TopicExchangePublisher do
         _, metadata, _ = bound_amqp_queue.pop
 
         expect(metadata.to_hash).to include(app_id: app_id)
+      end
+    end
+
+    context "with routing_key set" do
+      subject do
+        described_class.new(
+          exchange_name: exchange_name,
+          connection: amqp_connection,
+          routing_key: routing_key,
+        )
+      end
+
+      before do
+        bound_amqp_queue.bind(topic_exchange, routing_key: routing_key)
+        subject.publish_with_confirm(payload)
+      end
+
+      let(:payload) { { some: "data" } }
+
+      it "does route the message" do
+        _, _, json_payload = bound_amqp_queue.pop
+
+        actual_payload = JSON.parse(json_payload, symbolize_names: true)
+        expect(actual_payload).to eq(payload)
       end
     end
   end
