@@ -173,10 +173,16 @@ To run static code analysis:
 
 ## Release workflow
 
-**Note**: Make sure you are logged in as [twingly][twingly-rubygems] at RubyGems.org.
+* Bump the version in `lib/twingly/amqp/version.rb` in a commit, no need to push (the release task does that).
 
-Build and [publish](http://guides.rubygems.org/publishing/) the gem.
+* Build and [publish](http://guides.rubygems.org/publishing/) the gem. This will create the proper tag in git, push the commit and tag and upload to RubyGems.
 
-    bundle exec rake release
+        bundle exec rake release
+
+    * If you are not logged in as [twingly][twingly-rubygems] with ruby gems, the rake task will fail and tell you to set credentials via `gem push`, do that and run the `release` task again. It will be okay.
+
+* Update the changelog with [GitHub Changelog Generator](https://github.com/skywinder/github-changelog-generator/) (`gem install github_changelog_generator` if you don't have it, set `CHANGELOG_GITHUB_TOKEN` to a personal access token to avoid rate limiting by GitHub). This command will update `CHANGELOG.md`, commit and push manually.
+
+        github_changelog_generator -u twingly -p twingly-amqp
 
 [twingly-rubygems]: https://rubygems.org/profiles/twingly
