@@ -9,6 +9,9 @@ module Twingly
       @@instance = nil
 
       def self.options=(options)
+        warn "[DEPRECATION] `options=` is deprecated. " \
+          "Please use configuration block: `Twingly::AMQP.configure` instead."
+
         Twingly::AMQP.configure do |config|
           config.connection_options = options
         end
