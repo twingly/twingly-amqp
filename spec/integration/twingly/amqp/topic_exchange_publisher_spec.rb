@@ -70,13 +70,31 @@ describe Twingly::AMQP::TopicExchangePublisher do
         subject.publish_with_confirm(payload)
       end
 
-      let(:payload) { { some: "data" } }
-
       it "does route the message" do
         _, _, json_payload = bound_amqp_queue.pop
 
         actual_payload = JSON.parse(json_payload, symbolize_names: true)
         expect(actual_payload).to eq(payload)
+      end
+    end
+
+    context "with opts set" do
+      subject do
+        exchange_options = {
+          durable: true,
+        }
+
+        described_class.new(
+          exchange_name: exchange_name,
+          connection: amqp_connection,
+          opts: exchange_options,
+        )
+      end
+
+      it "does honor opts" do
+        # queue is already created with durable set to false
+        expect { subject.publish_with_confirm(payload) }
+          .to raise_error(Bunny::PreconditionFailed)
       end
     end
   end
