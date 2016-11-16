@@ -41,11 +41,11 @@ describe Twingly::AMQP::Pinger do
       end
 
       it "the ping should be discarded after it expires" do
-        expect(amqp_queue.message_count).to eq(1)
+        expect(default_exchange_queue.message_count).to eq(1)
 
         sleep ping_expiration / 1000
 
-        expect(amqp_queue.message_count).to eq(0)
+        expect(default_exchange_queue.message_count).to eq(0)
       end
     end
 
@@ -66,11 +66,11 @@ describe Twingly::AMQP::Pinger do
         end
 
         it "should publish one message to the queue" do
-          expect(amqp_queue.message_count).to eq(1)
+          expect(default_exchange_queue.message_count).to eq(1)
         end
 
         it "should publish a valid message" do
-          _, _, payload = amqp_queue.pop
+          _, _, payload = default_exchange_queue.pop
 
           actual_payload = JSON.parse(payload, symbolize_names: true)
           expect(actual_payload).to include(expected_payload)
@@ -83,7 +83,7 @@ describe Twingly::AMQP::Pinger do
         end
 
         it "should send multiple messages" do
-          expect(amqp_queue.message_count).to eq(urls.length)
+          expect(default_exchange_queue.message_count).to eq(urls.length)
         end
       end
     end

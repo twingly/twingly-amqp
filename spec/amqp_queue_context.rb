@@ -1,37 +1,39 @@
 shared_context "amqp queue" do
-  let(:queue_name)       { "twingly-amqp.test" }
-  let(:bound_queue_name) { "twingly-amqp.test.bound" }
-  let(:exchange_name)    { "twingly-amqp.test.exchange" }
+  let(:queue_name)          { "twingly-amqp.test.queue" }
+  let(:topic_queue_name)    { "twingly-amqp.test.queue.topic" }
+  let(:topic_exchange_name) { "twingly-amqp.test.exchange.topic" }
 
   let(:amqp_connection) do
     Twingly::AMQP::Connection.instance
   end
 
-  let(:amqp_queue) do
+  let(:default_exchange_queue) do
     channel = amqp_connection.create_channel
     channel.queue(queue_name, durable: true)
   end
 
   let(:topic_exchange) do
-    amqp_connection.create_channel.topic(exchange_name)
+    amqp_connection.create_channel.topic(topic_exchange_name)
   end
 
-  let(:bound_amqp_queue) do
+  let(:topic_exchange_queue) do
     channel = amqp_connection.create_channel
-    queue   = channel.queue(bound_queue_name)
+    queue   = channel.queue(topic_queue_name)
 
     queue.bind(topic_exchange)
   end
 
   before do
-    amqp_queue
+    default_exchange_queue
+
     topic_exchange
-    bound_amqp_queue
+    topic_exchange_queue
   end
 
   after do
-    amqp_queue.delete
-    bound_amqp_queue.delete
+    default_exchange_queue.delete
+
+    topic_exchange_queue.delete
     topic_exchange.delete
   end
 end

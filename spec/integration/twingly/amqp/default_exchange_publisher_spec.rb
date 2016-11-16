@@ -22,7 +22,7 @@ describe Twingly::AMQP::DefaultExchangePublisher do
         let(:expected_payload) { { some: "data" } }
 
         it "does publish the message" do
-          _, _, json_payload = amqp_queue.pop
+          _, _, json_payload = default_exchange_queue.pop
 
           actual_payload = JSON.parse(json_payload, symbolize_names: true)
           expect(actual_payload).to eq(expected_payload)
@@ -50,7 +50,7 @@ describe Twingly::AMQP::DefaultExchangePublisher do
       end
 
       it "does honor the customization" do
-        _, metadata, _ = amqp_queue.pop
+        _, metadata, _ = default_exchange_queue.pop
 
         expect(metadata.to_hash).to include(app_id: app_id)
       end
