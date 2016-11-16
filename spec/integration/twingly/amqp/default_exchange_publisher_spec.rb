@@ -1,6 +1,6 @@
 require "amqp_queue_context"
 
-describe Twingly::AMQP::QueuePublisher do
+describe Twingly::AMQP::DefaultExchangePublisher do
   include_context "amqp queue"
 
   let(:payload) { { some: "data" } }

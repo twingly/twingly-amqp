@@ -4,7 +4,7 @@ require "ostruct"
 
 module Twingly
   module AMQP
-    class QueuePublisher
+    class DefaultExchangePublisher
       def initialize(queue_name:, connection: nil)
         options.routing_key = queue_name
 
