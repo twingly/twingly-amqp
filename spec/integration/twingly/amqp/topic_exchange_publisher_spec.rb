@@ -57,15 +57,13 @@ describe Twingly::AMQP::TopicExchangePublisher do
     end
 
     context "with routing_key set" do
-      subject do
-        described_class.new(
-          exchange_name: exchange_name,
-          connection: amqp_connection,
-          routing_key: routing_key,
-        )
-      end
+      let(:routing_key) { "routing.test" }
 
       before do
+        subject.configure_publish_options do |options|
+          options.routing_key = routing_key
+        end
+
         bound_amqp_queue.bind(topic_exchange, routing_key: routing_key)
         subject.publish_with_confirm(payload)
       end
