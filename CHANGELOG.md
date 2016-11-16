@@ -1,21 +1,32 @@
 # Change Log
 
-## [Unreleased](https://github.com/twingly/twingly-amqp/tree/HEAD)
-
-[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.1.0...HEAD)
+## [v4.2.0](https://github.com/twingly/twingly-amqp/tree/v4.2.0) (2016-11-16)
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.1.0...v4.2.0)
 
 **Implemented enhancements:**
 
+- Improve release documentation and changelog [\#52](https://github.com/twingly/twingly-amqp/issues/52)
 - Guidelines how to test applications that use this library [\#11](https://github.com/twingly/twingly-amqp/issues/11)
 
 **Fixed bugs:**
 
+- Using default host variable results in "Can't modify frozen array" error [\#53](https://github.com/twingly/twingly-amqp/issues/53)
 - Timeout threshold too low, increase or refactor? [\#44](https://github.com/twingly/twingly-amqp/issues/44)
 - Test suite not reliable? [\#42](https://github.com/twingly/twingly-amqp/issues/42)
 
+**Closed issues:**
+
+- Log exceptions happening in on\_exception [\#46](https://github.com/twingly/twingly-amqp/issues/46)
+- Add class for publishing messages [\#12](https://github.com/twingly/twingly-amqp/issues/12)
+
 **Merged pull requests:**
 
+- Rename QueuePublisher to DefaultExchangePublisher [\#58](https://github.com/twingly/twingly-amqp/pull/58) ([walro](https://github.com/walro))
+- Make sure using default host doesn't raise error [\#55](https://github.com/twingly/twingly-amqp/pull/55) ([roback](https://github.com/roback))
+- Improve release instructions and update change log [\#54](https://github.com/twingly/twingly-amqp/pull/54) ([walro](https://github.com/walro))
+- Add TopicExchangePublisher class [\#51](https://github.com/twingly/twingly-amqp/pull/51) ([walro](https://github.com/walro))
 - Remove sleeping in specs [\#50](https://github.com/twingly/twingly-amqp/pull/50) ([walro](https://github.com/walro))
+- Configure pattern and ability to set logger [\#49](https://github.com/twingly/twingly-amqp/pull/49) ([walro](https://github.com/walro))
 - Add RuboCop [\#48](https://github.com/twingly/twingly-amqp/pull/48) ([walro](https://github.com/walro))
 - Introduce class for publishing to queues [\#47](https://github.com/twingly/twingly-amqp/pull/47) ([walro](https://github.com/walro))
 - Minor improvements and fix unreliable test case [\#43](https://github.com/twingly/twingly-amqp/pull/43) ([walro](https://github.com/walro))
