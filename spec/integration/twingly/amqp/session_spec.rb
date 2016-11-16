@@ -22,6 +22,20 @@ describe Twingly::AMQP::Session do
 
         described_class.new
       end
+
+      context "without host environment variable" do
+        around do |spec|
+          host = ENV.delete("RABBITMQ_01_HOST")
+
+          spec.run
+
+          ENV["RABBITMQ_01_HOST"] = host
+        end
+
+        it "should not raise an error" do
+          expect { described_class.new }.not_to raise_error
+        end
+      end
     end
 
     context "with arguments" do

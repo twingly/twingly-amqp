@@ -55,7 +55,7 @@ module Twingly
         end
         hosts = environment_keys_with_host.map { |key| ENV[key] }
 
-        return DEFAULT_HOSTS if hosts.empty?
+        return DEFAULT_HOSTS.dup if hosts.empty?
 
         hosts
       end
