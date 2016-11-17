@@ -26,6 +26,8 @@ Environment variables:
 * `AMQP_PASSWORD` - Defaults to `guest`
 * `AMQP_TLS` - Use TLS connection if set
 
+There are some usage examples in [examples/](examples/).
+
 ### Customize options
 
 If you don't have the RabbitMQ hosts, user or password in your ENV you can set them via the configuration block `Twingly::AMQP.configure`, see example below, before you create an instance of `Subscription` or `Pinger`. All options are sent to `Bunny.new`, see the [documentation][ruby-bunny] for all available options.
