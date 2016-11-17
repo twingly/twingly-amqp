@@ -1,4 +1,4 @@
-require "twingly/amqp/session"
+require "twingly/amqp"
 
 module Twingly
   module AMQP
