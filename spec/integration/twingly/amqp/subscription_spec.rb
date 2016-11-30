@@ -148,6 +148,8 @@ describe Twingly::AMQP::Subscription do
     end
 
     context "when blocking is false" do
+      let(:message_count) { 2 }
+
       after { subject.cancel! }
 
       it "should be non-blocking" do
@@ -161,16 +163,19 @@ describe Twingly::AMQP::Subscription do
         expect(is_non_blocking).to eq(true)
       end
 
-      it "should receive the message published on the exchange" do
-        received_url = nil
+      it "should receive the messages published on the exchange" do
+        received_urls = []
         subject.each_message(blocking: false) do |message|
-          received_url = message.payload[:url]
+          received_urls << message.payload[:url]
         end
 
-        exchange.publish(payload_json, routing_key: routing_key)
+        message_count.times do
+          exchange.publish(payload_json, routing_key: routing_key)
+        end
+
         exchange.wait_for_confirms
 
-        expect(received_url).to eq(payload_url)
+        expect(received_urls.count).to eq(message_count)
       end
     end
   end
