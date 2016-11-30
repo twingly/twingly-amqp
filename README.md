@@ -83,7 +83,7 @@ end
 #### Non-blocking subscription
 
 ```ruby
-subscription.on_each_message do |message|
+subscription.each_message(blocking: false) do |message|
   puts "Received #{message.payload.inspect}"
   message.ack
 end

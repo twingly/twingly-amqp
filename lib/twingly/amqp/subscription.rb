@@ -24,19 +24,15 @@ module Twingly
         @on_exception_callback          = proc {}
       end
 
-      def each_message(&block)
+      def each_message(blocking: true, &block)
         consumer = create_consumer(&block)
+
+        return unless blocking
 
         # The consumer isn't blocking, so we wait here
         sleep 0.01 until cancel?
 
         consumer.cancel
-      end
-
-      def on_each_message(&block)
-        setup_traps
-
-        create_consumer(&block)
       end
 
       def before_handle_message(&block)
