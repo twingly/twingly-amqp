@@ -80,6 +80,19 @@ subscription.each_message do |message| # An instance of Twingly::AMQP::Message
 end
 ```
 
+#### Non-blocking subscription
+
+```ruby
+subscription.on_each_message do |message|
+  puts "Received #{message.payload.inspect}"
+  message.ack
+end
+
+# Do something
+
+subscription.cancel! # Stops the subscriber
+```
+
 ### Publish to a queue on the default exchange
 
 ```ruby

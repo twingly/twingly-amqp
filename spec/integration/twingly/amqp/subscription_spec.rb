@@ -10,6 +10,10 @@ describe Twingly::AMQP::Subscription do
     end
   end
 
+  def wait_for
+    sleep 0.1 until yield
+  end
+
   include_context "amqp queue"
 
   let(:payload_url)    { "http://www.test.se" }
@@ -145,6 +149,34 @@ describe Twingly::AMQP::Subscription do
 
         expect(received_url).to eq(payload_url)
       end
+    end
+  end
+
+  describe "#on_each_message" do
+    after { subject.cancel! }
+    it "should be non-blocking" do
+      exchange.publish(payload_json, routing_key: routing_key)
+      exchange.wait_for_confirms
+
+      is_non_blocking = false
+      subject.on_each_message { |_| }
+      is_non_blocking = true
+
+      expect(is_non_blocking).to eq(true)
+    end
+
+    it "should receive the message published on the exchange" do
+      exchange.publish(payload_json, routing_key: routing_key)
+      exchange.wait_for_confirms
+
+      received_url = nil
+      subject.on_each_message do |message|
+        received_url = message.payload[:url]
+      end
+
+      wait_for { !received_url.nil? }
+
+      expect(received_url).to eq(payload_url)
     end
   end
 end
