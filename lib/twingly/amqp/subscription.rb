@@ -27,12 +27,11 @@ module Twingly
       def each_message(blocking: true, &block)
         consumer = create_consumer(&block)
 
-        return unless blocking
+        if blocking
+          sleep 0.01 until cancel?
 
-        # The consumer isn't blocking, so we wait here
-        sleep 0.01 until cancel?
-
-        consumer.cancel
+          consumer.cancel
+        end
       end
 
       def before_handle_message(&block)
