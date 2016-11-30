@@ -28,7 +28,7 @@ module Twingly
         consumer = create_consumer(&block)
 
         # The consumer isn't blocking, so we wait here
-        sleep 0.5 until cancel?
+        sleep 0.01 until cancel?
 
         consumer.cancel
       end
