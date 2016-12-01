@@ -24,26 +24,14 @@ module Twingly
         @on_exception_callback          = proc {}
       end
 
-      def each_message(&block)
-        setup_traps
+      def each_message(blocking: true, &block)
+        consumer = create_consumer(&block)
 
-        consumer = @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
-          @before_handle_message_callback.call(payload)
+        if blocking
+          sleep 0.01 until cancel?
 
-          message = Message.new(
-            delivery_info: delivery_info,
-            metadata:      metadata,
-            payload:       payload,
-            channel:       @channel,
-          )
-
-          block.call(message)
+          consumer.cancel
         end
-
-        # The consumer isn't blocking, so we wait here
-        sleep 0.5 until cancel?
-
-        consumer.cancel
       end
 
       def before_handle_message(&block)
@@ -63,6 +51,21 @@ module Twingly
       end
 
       private
+
+      def create_consumer(&block)
+        @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
+          @before_handle_message_callback.call(payload)
+
+          message = Message.new(
+            delivery_info: delivery_info,
+            metadata:      metadata,
+            payload:       payload,
+            channel:       @channel,
+          )
+
+          block.call(message)
+        end
+      end
 
       def create_channel(connection)
         channel = connection.create_channel(nil, @consumer_threads)
