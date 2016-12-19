@@ -59,6 +59,7 @@ subscription = Twingly::AMQP::Subscription.new(
   routing_key:      "url.blog",     # Optional, uses the default exchange if omitted
   consumer_threads: 4,              # Optional
   prefetch:         20,             # Optional
+  max_length:       10_000,         # Optional
 )
 
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
