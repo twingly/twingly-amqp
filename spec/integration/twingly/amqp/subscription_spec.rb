@@ -10,7 +10,6 @@ describe Twingly::AMQP::Subscription do
     end
   end
 
-  include_context "amqp queue"
 
   let(:payload_url)    { "http://www.test.se" }
   let(:payload_json)   { { url: payload_url }.to_json }
@@ -22,15 +21,84 @@ describe Twingly::AMQP::Subscription do
     channel.topic(exchange_topic, durable: true)
   end
 
-  subject! do
-    described_class.new(
-      queue_name:     queue_name,
-      exchange_topic: exchange_topic,
-      routing_key:    routing_key,
-    )
+  describe "#new" do
+    subject do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+        max_length:     max_length,
+      )
+    end
+
+    let(:max_length)      { nil }
+    let(:queue_name)      { "twingly-amqp.test.queue" }
+    let(:amqp_connection) { Twingly::AMQP::Connection.instance }
+
+    context "with max_length set (bounded queue)" do
+      let(:queue_name) { "twingly-amqp.test.queue.bounded" }
+      let(:max_length) { 10 }
+
+      context "when overpublished" do
+        before do
+          (2 * max_length).times do
+            exchange.publish(payload_json, routing_key: routing_key)
+          end
+          exchange.wait_for_confirms
+        end
+
+        it "ensures only max_length messages are queued" do
+          expect(subject.message_count).to eq(max_length)
+        end
+      end
+
+      context "when queue max_length is changed for an existing queue" do
+        let(:max_length) { 1 }
+        specify { expect { subject }.to raise_error(Bunny::PreconditionFailed) }
+      end
+    end
+  end
+
+  describe "#message_count" do
+    include_context "amqp queue"
+
+    subject! do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
+    context "for an empty queue" do
+      specify { expect(subject.message_count).to eq(0) }
+    end
+
+    context "for a queue with messages" do
+      before do
+        message_count.times do
+          exchange.publish(payload_json, routing_key: routing_key)
+        end
+        exchange.wait_for_confirms
+      end
+
+      let(:message_count) { 3 }
+
+      specify { expect(subject.message_count).to eq(message_count) }
+    end
   end
 
   describe "#each_message" do
+    include_context "amqp queue"
+
+    subject! do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
     context "when message has same routing key" do
       it "should receive the message published on the exchange" do
         exchange.publish(payload_json, routing_key: routing_key)
