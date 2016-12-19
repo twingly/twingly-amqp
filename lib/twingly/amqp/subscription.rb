@@ -4,7 +4,8 @@ require "twingly/amqp/message"
 module Twingly
   module AMQP
     class Subscription
-      def initialize(queue_name:, exchange_topic: nil, routing_key: nil, consumer_threads: 4, prefetch: 20, connection: nil)
+      def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
+                     consumer_threads: 4, prefetch: 20, connection: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_key      = routing_key
