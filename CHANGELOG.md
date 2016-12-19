@@ -1,5 +1,17 @@
 # Change Log
 
+## [v4.3.0](https://github.com/twingly/twingly-amqp/tree/v4.3.0) (2016-12-19)
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.2.1...v4.3.0)
+
+**Closed issues:**
+
+- Non-blocking subscribe \(\#on\_each\_message\) [\#29](https://github.com/twingly/twingly-amqp/issues/29)
+
+**Merged pull requests:**
+
+- Bounded queues [\#62](https://github.com/twingly/twingly-amqp/pull/62) ([jage](https://github.com/jage))
+- Non-blocking subscribe \(\#on\_each\_message\) [\#61](https://github.com/twingly/twingly-amqp/pull/61) ([roback](https://github.com/roback))
+
 ## [v4.2.1](https://github.com/twingly/twingly-amqp/tree/v4.2.1) (2016-11-17)
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.2.0...v4.2.1)
 
