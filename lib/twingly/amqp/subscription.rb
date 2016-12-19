@@ -49,6 +49,10 @@ module Twingly
         @queue.status.fetch(:message_count)
       end
 
+      def raw_queue
+        @queue
+      end
+
       def cancel?
         @cancel
       end

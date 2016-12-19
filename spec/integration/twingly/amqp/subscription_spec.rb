@@ -10,6 +10,7 @@ describe Twingly::AMQP::Subscription do
     end
   end
 
+  include_context "amqp queue"
 
   let(:payload_url)    { "http://www.test.se" }
   let(:payload_json)   { { url: payload_url }.to_json }
@@ -22,21 +23,23 @@ describe Twingly::AMQP::Subscription do
   end
 
   describe "#new" do
-    subject do
+    subject! do
       described_class.new(
-        queue_name:     queue_name,
+        queue_name:     queue_name + ".bounded",
         exchange_topic: exchange_topic,
         routing_key:    routing_key,
         max_length:     max_length,
       )
     end
+    let(:max_length) { nil }
 
-    let(:max_length)      { nil }
-    let(:queue_name)      { "twingly-amqp.test.queue" }
-    let(:amqp_connection) { Twingly::AMQP::Connection.instance }
+    after do
+      subject.raw_queue.delete
+    end
+
+    specify { expect(subject).to be_a(described_class) }
 
     context "with max_length set (bounded queue)" do
-      let(:queue_name) { "twingly-amqp.test.queue.bounded" }
       let(:max_length) { 10 }
 
       context "when overpublished" do
@@ -51,17 +54,10 @@ describe Twingly::AMQP::Subscription do
           expect(subject.message_count).to eq(max_length)
         end
       end
-
-      context "when queue max_length is changed for an existing queue" do
-        let(:max_length) { 1 }
-        specify { expect { subject }.to raise_error(Bunny::PreconditionFailed) }
-      end
     end
   end
 
   describe "#message_count" do
-    include_context "amqp queue"
-
     subject! do
       described_class.new(
         queue_name:     queue_name,
@@ -88,9 +84,19 @@ describe Twingly::AMQP::Subscription do
     end
   end
 
-  describe "#each_message" do
-    include_context "amqp queue"
+  describe "#raw_queue" do
+    subject do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
 
+    specify { expect(subject.raw_queue).to be_a(Bunny::Queue) }
+  end
+
+  describe "#each_message" do
     subject! do
       described_class.new(
         queue_name:     queue_name,
