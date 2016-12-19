@@ -4,12 +4,15 @@ require "twingly/amqp/message"
 module Twingly
   module AMQP
     class Subscription
-      def initialize(queue_name:, exchange_topic: nil, routing_key: nil, consumer_threads: 4, prefetch: 20, connection: nil)
+      def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
+                     consumer_threads: 4, prefetch: 20, connection: nil,
+                     max_length: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_key      = routing_key
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
+        @max_length       = max_length
 
         connection ||= Connection.instance
         @channel = create_channel(connection)
@@ -40,6 +43,14 @@ module Twingly
 
       def on_exception(&block)
         @on_exception_callback = block
+      end
+
+      def message_count
+        @queue.status.fetch(:message_count)
+      end
+
+      def raw_queue
+        @queue
       end
 
       def cancel?
@@ -80,7 +91,14 @@ module Twingly
       def queue_options
         {
           durable: true,
+          arguments: queue_arguments,
         }
+      end
+
+      def queue_arguments
+        {}.tap do |arguments|
+          arguments["x-max-length"] = @max_length if @max_length
+        end
       end
 
       def subscribe_options

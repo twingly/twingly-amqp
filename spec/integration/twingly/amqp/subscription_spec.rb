@@ -22,15 +22,89 @@ describe Twingly::AMQP::Subscription do
     channel.topic(exchange_topic, durable: true)
   end
 
-  subject! do
-    described_class.new(
-      queue_name:     queue_name,
-      exchange_topic: exchange_topic,
-      routing_key:    routing_key,
-    )
+  describe "#initialize" do
+    subject! do
+      described_class.new(
+        queue_name:     queue_name + ".bounded",
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+        max_length:     max_length,
+      )
+    end
+    let(:max_length) { nil }
+
+    after do
+      subject.raw_queue.delete
+    end
+
+    specify { expect(subject).to be_a(described_class) }
+
+    context "with max_length set (bounded queue)" do
+      let(:max_length) { 10 }
+
+      context "when overpublished" do
+        before do
+          (2 * max_length).times do
+            exchange.publish(payload_json, routing_key: routing_key)
+          end
+          exchange.wait_for_confirms
+        end
+
+        it "ensures only max_length messages are queued" do
+          expect(subject.message_count).to eq(max_length)
+        end
+      end
+    end
+  end
+
+  describe "#message_count" do
+    subject! do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
+    context "for an empty queue" do
+      specify { expect(subject.message_count).to eq(0) }
+    end
+
+    context "for a queue with messages" do
+      before do
+        message_count.times do
+          exchange.publish(payload_json, routing_key: routing_key)
+        end
+        exchange.wait_for_confirms
+      end
+
+      let(:message_count) { 3 }
+
+      specify { expect(subject.message_count).to eq(message_count) }
+    end
+  end
+
+  describe "#raw_queue" do
+    subject do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
+    specify { expect(subject.raw_queue).to be_a(Bunny::Queue) }
   end
 
   describe "#each_message" do
+    subject! do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
     context "when message has same routing key" do
       it "should receive the message published on the exchange" do
         exchange.publish(payload_json, routing_key: routing_key)
