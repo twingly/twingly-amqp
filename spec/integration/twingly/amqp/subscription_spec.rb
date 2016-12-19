@@ -22,7 +22,7 @@ describe Twingly::AMQP::Subscription do
     channel.topic(exchange_topic, durable: true)
   end
 
-  describe "#new" do
+  describe "#initialize" do
     subject! do
       described_class.new(
         queue_name:     queue_name + ".bounded",
