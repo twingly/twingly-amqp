@@ -1,6 +1,3 @@
-AllCops:
-  TargetRubyVersion: 2.2
-
 Documentation:
   Enabled: false
 
