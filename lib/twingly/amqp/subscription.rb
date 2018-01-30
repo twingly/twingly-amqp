@@ -74,7 +74,7 @@ module Twingly
             channel:       @channel,
           )
 
-          yield(message)
+          yield message
         end
       end
 
