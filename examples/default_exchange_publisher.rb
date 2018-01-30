@@ -7,4 +7,4 @@ publisher.configure_publish_options do |options|
   options.expiration = 5000
 end
 
-publisher.publish({ my: "data" })
+publisher.publish(my: "data")

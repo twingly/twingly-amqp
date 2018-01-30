@@ -26,12 +26,11 @@ module Twingly
         options.validate
 
         Array(urls).each do |url|
-          unless cached?(url)
-            publish(url, options)
-            cache!(url)
+          next if cached?(url)
+          publish(url, options)
+          cache!(url)
 
-            yield url if block_given?
-          end
+          yield url if block_given?
         end
       end
 
@@ -67,7 +66,7 @@ module Twingly
       end
 
       class NullCache
-        def self.cached?(url)
+        def self.cached?(_url)
           false
         end
 

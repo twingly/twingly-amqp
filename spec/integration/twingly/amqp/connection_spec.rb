@@ -13,7 +13,7 @@ describe Twingly::AMQP::Connection do
   end
 
   describe ".options=" do
-    let(:options) { { hosts: %w(host1 host2) } }
+    let(:options) { { hosts: %w[host1 host2] } }
 
     it "updates the configuration" do
       described_class.options = options
