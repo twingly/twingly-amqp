@@ -63,7 +63,7 @@ module Twingly
 
       private
 
-      def create_consumer(&block)
+      def create_consumer
         @queue.subscribe(subscribe_options) do |delivery_info, metadata, payload|
           @before_handle_message_callback.call(payload)
 
@@ -74,7 +74,7 @@ module Twingly
             channel:       @channel,
           )
 
-          block.call(message)
+          yield(message)
         end
       end
 
@@ -114,7 +114,7 @@ module Twingly
       end
 
       def setup_traps
-        [:INT, :TERM].each do |signal|
+        %i[INT TERM].each do |signal|
           Signal.trap(signal) do
             # Exit fast if we've already got a signal since before
             exit!(true) if cancel?

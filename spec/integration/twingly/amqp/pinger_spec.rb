@@ -79,7 +79,7 @@ describe Twingly::AMQP::Pinger do
 
       context "with an array of URLs" do
         let(:urls) do
-          %w(http://example.com http://test.se https://another-one.com)
+          %w[http://example.com http://test.se https://another-one.com]
         end
 
         it "should send multiple messages" do
