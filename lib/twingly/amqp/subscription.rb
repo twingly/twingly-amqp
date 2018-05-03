@@ -112,18 +112,6 @@ module Twingly
         tag_name = Socket.gethostname
         @channel.generate_consumer_tag(tag_name)
       end
-
-      def setup_traps
-        %i[INT TERM].each do |signal|
-          Signal.trap(signal) do
-            # Exit fast if we've already got a signal since before
-            exit!(true) if cancel?
-
-            # Set cancel flag, cancels consumers
-            cancel!
-          end
-        end
-      end
     end
   end
 end
