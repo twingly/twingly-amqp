@@ -27,10 +27,6 @@ module Twingly
         options[:pass]  ||= password_from_env
         options[:hosts] ||= hosts_from_env
 
-        # Used as a workaround for
-        # https://github.com/ruby-amqp/bunny/issues/446
-        options[:hosts] = options.fetch(:hosts).dup
-
         default_connection_options.merge(options)
       end
 
