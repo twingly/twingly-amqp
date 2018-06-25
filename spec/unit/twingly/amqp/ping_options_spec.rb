@@ -69,7 +69,6 @@ describe Twingly::AMQP::PingOptions do
   describe "#to_h" do
     let(:expected) do
       {
-        automatic_ping:       false,
         provider_name:        provider_name,
         source_ip:            source_ip,
         priority:             priority,

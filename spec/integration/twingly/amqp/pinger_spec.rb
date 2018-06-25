@@ -61,7 +61,6 @@ describe Twingly::AMQP::Pinger do
             priority:       priority,
             source_ip:      source_ip,
             url:            urls,
-            automatic_ping: false,
           }
         end
 

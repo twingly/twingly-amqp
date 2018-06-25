@@ -19,7 +19,6 @@ module Twingly
 
       def to_h
         required_options = {
-          automatic_ping: false,
           provider_name:  provider_name,
           source_ip:      source_ip,
           priority:       priority,
