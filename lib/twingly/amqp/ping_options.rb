@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module Twingly
   module AMQP
     class PingOptions
