@@ -20,9 +20,8 @@ module Twingly
           provider_name:  provider_name,
           source_ip:      source_ip,
           priority:       priority,
+          custom_options: custom_options,
         }
-
-        custom_options.merge(required_options)
       end
 
       def validate

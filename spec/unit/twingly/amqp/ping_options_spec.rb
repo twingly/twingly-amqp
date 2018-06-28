@@ -69,10 +69,12 @@ describe Twingly::AMQP::PingOptions do
   describe "#to_h" do
     let(:expected) do
       {
-        provider_name:        provider_name,
-        source_ip:            source_ip,
-        priority:             priority,
-        custom_option_name => custom_option_value,
+        provider_name:  provider_name,
+        source_ip:      source_ip,
+        priority:       priority,
+        custom_options: {
+          custom_option_name => custom_option_value,
+        },
       }
     end
 
@@ -84,14 +86,6 @@ describe Twingly::AMQP::PingOptions do
       it "should return a hash containing correct options" do
         expect(subject).to eq(expected)
       end
-    end
-
-    context "when there is a name conflict with custom_options" do
-      let(:custom_option_name) { :provider_name }
-
-      subject { hash.fetch(:provider_name) }
-
-      it { is_expected.to eq(provider_name) }
     end
   end
 
