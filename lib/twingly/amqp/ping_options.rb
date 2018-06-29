@@ -17,7 +17,7 @@ module Twingly
 
       def custom_options=(options)
         unless options.respond_to?(:to_h)
-          raise ArgumentError, "Options must respond to 'to_h'"
+          raise ArgumentError, "custom_options must respond to 'to_h'"
         end
 
         @custom_options = options.to_h

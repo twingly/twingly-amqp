@@ -157,6 +157,7 @@ urls = [
 ]
 
 # Optional, is merged with the default options above
+#   options given to #ping takes precedence over the default options
 options = {
   provider_name: "a-provider-name",
   source_ip:     "?.?.?.?",
