@@ -5,8 +5,6 @@ module Twingly
 
       attr_reader :custom_options
 
-      REQUIRED_OPTIONS = %i[provider_name source_ip priority]
-
       def initialize(provider_name: nil, source_ip: nil, priority: nil,
                      custom_options: {})
         self.provider_name  = provider_name
@@ -36,7 +34,7 @@ module Twingly
 
       def validate
         missing_keys = to_h.select do |key, value|
-          REQUIRED_OPTIONS.include?(key) && value.to_s.empty?
+          key != :custom_options && value.to_s.empty?
         end.keys
 
         if missing_keys.any?
