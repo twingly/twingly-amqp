@@ -1,7 +1,9 @@
 module Twingly
   module AMQP
     class PingOptions
-      attr_accessor :provider_name, :source_ip, :priority, :custom_options
+      attr_accessor :provider_name, :source_ip, :priority
+
+      attr_reader :custom_options
 
       REQUIRED_OPTIONS = %i[provider_name source_ip priority]
 
@@ -15,8 +17,16 @@ module Twingly
         yield self if block_given?
       end
 
+      def custom_options=(options)
+        unless options.respond_to?(:to_h)
+          raise ArgumentError, "Options must respond to 'to_h'"
+        end
+
+        @custom_options = options.to_h
+      end
+
       def to_h
-        required_options = {
+        {
           provider_name:  provider_name,
           source_ip:      source_ip,
           priority:       priority,

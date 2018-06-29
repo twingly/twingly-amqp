@@ -52,6 +52,15 @@ describe Twingly::AMQP::PingOptions do
       it "should raise an exception" do
         expect { described_class.new(options) }.to raise_error(ArgumentError)
       end
+
+      context "when given custom_options not responding to 'to_h'" do
+        let(:custom_options) { "not a hash" }
+
+        it do
+          expect { subject }.to raise_error(ArgumentError,
+                                            /must respond to 'to_h'/)
+        end
+      end
     end
 
     context "when given a block" do
@@ -62,6 +71,15 @@ describe Twingly::AMQP::PingOptions do
         end
 
         expect(yielded_options).to equal(options)
+      end
+    end
+  end
+
+  describe "#custom_options=" do
+    context "when given object not responding to 'to_h'" do
+      it do
+        expect { subject.custom_options = "not a hash" }
+          .to raise_error(ArgumentError, /must respond to 'to_h'/)
       end
     end
   end
