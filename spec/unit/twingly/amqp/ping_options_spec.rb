@@ -9,11 +9,16 @@ describe Twingly::AMQP::PingOptions do
   let(:source_ip)     { "1.2.3.4" }
   let(:priority)      { 1 }
 
+  let(:custom_option_name)  { :my_option }
+  let(:custom_option_value) { 1234 }
+  let(:custom_options)      { { custom_option_name => custom_option_value } }
+
   subject(:subject_with_all_options) do
     described_class.new do |options|
-      options.provider_name = provider_name
-      options.source_ip     = source_ip
-      options.priority      = priority
+      options.provider_name  = provider_name
+      options.source_ip      = source_ip
+      options.priority       = priority
+      options.custom_options = custom_options
     end
   end
 
@@ -21,9 +26,10 @@ describe Twingly::AMQP::PingOptions do
     context "when given valid options" do
       let(:options) do
         {
-          provider_name: provider_name,
-          source_ip:     source_ip,
-          priority:      priority,
+          provider_name:  provider_name,
+          source_ip:      source_ip,
+          priority:       priority,
+          custom_options: custom_options,
         }
       end
       subject { described_class.new(options) }
@@ -32,6 +38,7 @@ describe Twingly::AMQP::PingOptions do
         expect(subject.provider_name).to eq(provider_name)
         expect(subject.source_ip).to eq(source_ip)
         expect(subject.priority).to eq(priority)
+        expect(subject.custom_options).to eq(custom_options)
       end
     end
 
@@ -44,6 +51,15 @@ describe Twingly::AMQP::PingOptions do
 
       it "should raise an exception" do
         expect { described_class.new(options) }.to raise_error(ArgumentError)
+      end
+
+      context "when given custom_options not responding to 'to_h'" do
+        let(:custom_options) { "not a hash" }
+
+        it do
+          expect { subject }.to raise_error(ArgumentError,
+                                            /must respond to 'to_h'/)
+        end
       end
     end
 
@@ -59,17 +75,28 @@ describe Twingly::AMQP::PingOptions do
     end
   end
 
+  describe "#custom_options=" do
+    context "when given object not responding to 'to_h'" do
+      it do
+        expect { subject.custom_options = "not a hash" }
+          .to raise_error(ArgumentError, /must respond to 'to_h'/)
+      end
+    end
+  end
+
   describe "#to_h" do
     let(:expected) do
       {
-        automatic_ping: false,
         provider_name:  provider_name,
         source_ip:      source_ip,
         priority:       priority,
+        custom_options: {
+          custom_option_name => custom_option_value,
+        },
       }
     end
 
-    subject do
+    subject(:hash) do
       subject_with_all_options.to_h
     end
 
@@ -129,15 +156,19 @@ describe Twingly::AMQP::PingOptions do
   end
 
   describe "#merge" do
-    let(:other_provider_name) { "OtherProvider" }
-    let(:other_source_ip)     { nil }
+    let(:other_provider_name)      { "OtherProvider" }
+    let(:other_source_ip)          { nil }
+    let(:other_custom_option_name) { :my_other_option }
+    let(:other_custom_options)     { { other_custom_option_name => 5678 } }
     let(:other) do
       described_class.new do |options|
-        options.provider_name = other_provider_name
-        options.source_ip     = other_source_ip
+        options.provider_name  = other_provider_name
+        options.source_ip      = other_source_ip
+        options.custom_options = other_custom_options
       end
     end
-    let(:merged) { subject.merge(other) }
+
+    let(:merged) { subject_with_all_options.merge(other) }
 
     it "should return new PingOptions object" do
       expect(merged).not_to equal(subject)
@@ -154,6 +185,20 @@ describe Twingly::AMQP::PingOptions do
     context "when value from other is nil" do
       it "value from self should be used" do
         expect(merged.source_ip).to eq(source_ip)
+      end
+    end
+
+    describe "#custom_options" do
+      subject { merged.custom_options }
+
+      let(:expected_options) { custom_options.merge(other_custom_options) }
+
+      it { is_expected.to eq(expected_options) }
+
+      context "when both contain the same option" do
+        let(:other_custom_option_name) { custom_option_name }
+
+        it { is_expected.to eq(other_custom_options) }
       end
     end
   end

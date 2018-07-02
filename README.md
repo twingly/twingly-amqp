@@ -145,9 +145,11 @@ pinger = Twingly::AMQP::Pinger.new(
 
 # Optional, options can also be given to #ping
 pinger.default_ping_options do |options|
-  options.provider_name = "TestProvider"
-  options.source_ip     = "?.?.?.?"
-  options.priority      = 1
+  options.provider_name  = "TestProvider"
+  options.source_ip      = "?.?.?.?"
+  options.priority       = 1
+  # Optional keys/values that will be included in each ping message
+  options.custom_options = { my_option: "This is my own option" }
 end
 
 urls = [
@@ -155,10 +157,12 @@ urls = [
 ]
 
 # Optional, is merged with the default options above
+#   options given to #ping takes precedence over the default options
 options = {
   provider_name: "a-provider-name",
   source_ip:     "?.?.?.?",
   priority:      1,
+  custom_options: { my_other_option: "Another option" },
 }
 
 pinger.ping(urls, options) do |pinged_url|
