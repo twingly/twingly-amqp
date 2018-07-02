@@ -1,5 +1,21 @@
 # Change Log
 
+## [v4.4.0](https://github.com/twingly/twingly-amqp/tree/v4.4.0) (2018-07-02)
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.3.0...v4.4.0)
+
+**Implemented enhancements:**
+
+- Remove signal trap code [\#63](https://github.com/twingly/twingly-amqp/issues/63)
+- Remove workaround for "frozen array" error in bunny [\#57](https://github.com/twingly/twingly-amqp/issues/57)
+- Possible to stop/cancel the subscription from caller [\#45](https://github.com/twingly/twingly-amqp/issues/45)
+
+**Merged pull requests:**
+
+- Allow custom options in ping message [\#67](https://github.com/twingly/twingly-amqp/pull/67) ([roback](https://github.com/roback))
+- Remove workaround for frozen arrary bug [\#66](https://github.com/twingly/twingly-amqp/pull/66) ([walro](https://github.com/walro))
+- Remove unused signal trap code [\#65](https://github.com/twingly/twingly-amqp/pull/65) ([roback](https://github.com/roback))
+- Require RuboCop \>= 0.49 [\#64](https://github.com/twingly/twingly-amqp/pull/64) ([walro](https://github.com/walro))
+
 ## [v4.3.0](https://github.com/twingly/twingly-amqp/tree/v4.3.0) (2016-12-19)
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.2.1...v4.3.0)
 
