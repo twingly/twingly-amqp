@@ -16,6 +16,7 @@ describe Twingly::AMQP::Subscription do
   let(:payload_json)   { { url: payload_url }.to_json }
   let(:exchange_topic) { "twingly-amqp.exchange.test" }
   let(:routing_key)    { "url.blog" }
+  let(:routing_keys)   { [routing_key] }
   let(:exchange) do
     channel = amqp_connection.create_channel
     channel.confirm_select
@@ -27,7 +28,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name + ".bounded",
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
         max_length:     max_length,
       )
     end
@@ -38,6 +39,18 @@ describe Twingly::AMQP::Subscription do
     end
 
     specify { expect(subject).to be_a(described_class) }
+
+    context "when using the deprecated routing_key argument" do
+      subject do
+        described_class.new(
+          queue_name:     queue_name,
+          exchange_topic: exchange_topic,
+          routing_key:    routing_key,
+        )
+      end
+
+      it { expect { subject }.not_to raise_error }
+    end
 
     context "with max_length set (bounded queue)" do
       let(:max_length) { 10 }
@@ -62,7 +75,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -89,7 +102,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -101,7 +114,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -128,7 +141,7 @@ describe Twingly::AMQP::Subscription do
         }
       end
 
-      let(:routing_key)   { routing_keys_and_payload_urls.keys }
+      let(:routing_keys)  { routing_keys_and_payload_urls.keys }
       let(:expected_urls) { routing_keys_and_payload_urls.values }
 
       it "should receive messages matching any of the routing keys" do

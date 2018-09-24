@@ -5,11 +5,11 @@ module Twingly
   module AMQP
     class Subscription
       def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
-                     consumer_threads: 4, prefetch: 20, connection: nil,
-                     max_length: nil)
+                     routing_keys: nil, consumer_threads: 4, prefetch: 20,
+                     connection: nil, max_length: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
-        @routing_keys     = Array(routing_key)
+        @routing_keys     = Array(routing_keys || routing_key)
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
         @max_length       = max_length
