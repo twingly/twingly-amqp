@@ -14,6 +14,11 @@ module Twingly
         @prefetch         = prefetch
         @max_length       = max_length
 
+        unless routing_key.nil?
+          warn "[DEPRECATION] `routing_key` is deprecated. "\
+               "Please use `routing_keys` instead."
+        end
+
         connection ||= Connection.instance
         @channel = create_channel(connection)
         @queue   = @channel.queue(@queue_name, queue_options)
