@@ -18,7 +18,7 @@ module Twingly
         @channel = create_channel(connection)
         @queue   = @channel.queue(@queue_name, queue_options)
 
-        if @exchange_topic && !@routing_keys.empty?
+        if @exchange_topic && @routing_keys.any?
           exchange = @channel.topic(@exchange_topic, durable: true)
 
           @routing_keys.each do |routing_key|
