@@ -56,7 +56,7 @@ end
 subscription = Twingly::AMQP::Subscription.new(
   queue_name:       "crawler-urls",
   exchange_topic:   "url-exchange", # Optional, uses the default exchange if omitted
-  routing_key:      "url.blog",     # Optional, uses the default exchange if omitted
+  routing_key:      "url.blog",     # Optional, uses the default exchange if omitted, also accepts an array of routing keys
   consumer_threads: 4,              # Optional
   prefetch:         20,             # Optional
   max_length:       10_000,         # Optional

@@ -9,7 +9,7 @@ module Twingly
                      max_length: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
-        @routing_key      = routing_key
+        @routing_keys     = Array(routing_key)
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
         @max_length       = max_length
@@ -18,9 +18,12 @@ module Twingly
         @channel = create_channel(connection)
         @queue   = @channel.queue(@queue_name, queue_options)
 
-        if @exchange_topic && @routing_key
+        if @exchange_topic && !@routing_keys.empty?
           exchange = @channel.topic(@exchange_topic, durable: true)
-          @queue.bind(exchange, routing_key: @routing_key)
+
+          @routing_keys.each do |routing_key|
+            @queue.bind(exchange, routing_key: routing_key)
+          end
         end
 
         @before_handle_message_callback = proc {}

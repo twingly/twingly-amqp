@@ -120,6 +120,37 @@ describe Twingly::AMQP::Subscription do
       end
     end
 
+    context "when subscribing using multiple routing keys" do
+      let(:routing_keys_and_payload_urls) do
+        {
+          "url.blog" => "https://blog.twingly.com/",
+          "url.post" => "https://blog.twingly.com/2006/09/05/twingly",
+        }
+      end
+
+      let(:routing_key)   { routing_keys_and_payload_urls.keys }
+      let(:expected_urls) { routing_keys_and_payload_urls.values }
+
+      it "should receive messages matching any of the routing keys" do
+        routing_keys_and_payload_urls.each do |routing_key, url|
+          exchange.publish({ url: url }.to_json, routing_key: routing_key)
+        end
+
+        exchange.wait_for_confirms
+
+        received_urls = []
+        subject.each_message do |message|
+          received_urls << message.payload[:url]
+
+          if received_urls.count == routing_keys_and_payload_urls.count
+            subject.cancel!
+          end
+        end
+
+        expect(received_urls).to contain_exactly(*expected_urls)
+      end
+    end
+
     context "when there are message with other routing keys" do
       let(:another_routing_key) { "url.post" }
 
