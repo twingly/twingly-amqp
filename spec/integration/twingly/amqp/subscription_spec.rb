@@ -166,7 +166,7 @@ describe Twingly::AMQP::Subscription do
           end
         end
 
-        expect(received_urls).to contain_exactly(*expected_urls)
+        expect(received_urls).to match_array(expected_urls)
       end
     end
 
