@@ -14,7 +14,7 @@ module Twingly
         @prefetch         = prefetch
         @max_length       = max_length
 
-        unless routing_key.nil?
+        if routing_key
           warn "[DEPRECATION] `routing_key` is deprecated. "\
                "Please use `routing_keys` instead."
         end
