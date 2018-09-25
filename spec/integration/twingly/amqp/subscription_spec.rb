@@ -16,6 +16,7 @@ describe Twingly::AMQP::Subscription do
   let(:payload_json)   { { url: payload_url }.to_json }
   let(:exchange_topic) { "twingly-amqp.exchange.test" }
   let(:routing_key)    { "url.blog" }
+  let(:routing_keys)   { [routing_key] }
   let(:exchange) do
     channel = amqp_connection.create_channel
     channel.confirm_select
@@ -27,7 +28,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name + ".bounded",
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
         max_length:     max_length,
       )
     end
@@ -38,6 +39,24 @@ describe Twingly::AMQP::Subscription do
     end
 
     specify { expect(subject).to be_a(described_class) }
+
+    context "when using the deprecated routing_key argument" do
+      subject do
+        described_class.new(
+          queue_name:     queue_name,
+          exchange_topic: exchange_topic,
+          routing_key:    routing_key,
+        )
+      end
+
+      it { expect { subject }.not_to raise_error }
+    end
+
+    context "when the routing_keys argument isn't an array" do
+      let(:routing_keys) { "a-single-routing-key" }
+
+      it { expect { subject }.not_to raise_error }
+    end
 
     context "with max_length set (bounded queue)" do
       let(:max_length) { 10 }
@@ -62,7 +81,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -89,7 +108,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -101,7 +120,7 @@ describe Twingly::AMQP::Subscription do
       described_class.new(
         queue_name:     queue_name,
         exchange_topic: exchange_topic,
-        routing_key:    routing_key,
+        routing_keys:   routing_keys,
       )
     end
 
@@ -117,6 +136,37 @@ describe Twingly::AMQP::Subscription do
         end
 
         expect(received_url).to eq(payload_url)
+      end
+    end
+
+    context "when subscribing using multiple routing keys" do
+      let(:routing_keys_and_payload_urls) do
+        {
+          "url.blog" => "https://blog.twingly.com/",
+          "url.post" => "https://blog.twingly.com/2006/09/05/twingly",
+        }
+      end
+
+      let(:routing_keys)  { routing_keys_and_payload_urls.keys }
+      let(:expected_urls) { routing_keys_and_payload_urls.values }
+
+      it "should receive messages matching any of the routing keys" do
+        routing_keys_and_payload_urls.each do |routing_key, url|
+          exchange.publish({ url: url }.to_json, routing_key: routing_key)
+        end
+
+        exchange.wait_for_confirms
+
+        received_urls = []
+        subject.each_message do |message|
+          received_urls << message.payload[:url]
+
+          if received_urls.count == routing_keys_and_payload_urls.count
+            subject.cancel!
+          end
+        end
+
+        expect(received_urls).to match_array(expected_urls)
       end
     end
 

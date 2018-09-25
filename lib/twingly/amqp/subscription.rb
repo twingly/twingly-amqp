@@ -5,22 +5,30 @@ module Twingly
   module AMQP
     class Subscription
       def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
-                     consumer_threads: 4, prefetch: 20, connection: nil,
-                     max_length: nil)
+                     routing_keys: nil, consumer_threads: 4, prefetch: 20,
+                     connection: nil, max_length: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
-        @routing_key      = routing_key
+        @routing_keys     = Array(routing_keys || routing_key)
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
         @max_length       = max_length
+
+        if routing_key
+          warn "[DEPRECATION] `routing_key` is deprecated. "\
+               "Please use `routing_keys` instead."
+        end
 
         connection ||= Connection.instance
         @channel = create_channel(connection)
         @queue   = @channel.queue(@queue_name, queue_options)
 
-        if @exchange_topic && @routing_key
+        if @exchange_topic && @routing_keys.any?
           exchange = @channel.topic(@exchange_topic, durable: true)
-          @queue.bind(exchange, routing_key: @routing_key)
+
+          @routing_keys.each do |routing_key|
+            @queue.bind(exchange, routing_key: routing_key)
+          end
         end
 
         @before_handle_message_callback = proc {}
