@@ -1,5 +1,16 @@
 # Change Log
 
+## [v4.5.0](https://github.com/twingly/twingly-amqp/tree/v4.5.0) (2018-09-25)
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.4.0...v4.5.0)
+
+**Closed issues:**
+
+- Be able to subscribe to multiple routing keys [\#69](https://github.com/twingly/twingly-amqp/issues/69)
+
+**Merged pull requests:**
+
+- Make it possible to subscribe using multiple routing keys [\#70](https://github.com/twingly/twingly-amqp/pull/70) ([roback](https://github.com/roback))
+
 ## [v4.4.0](https://github.com/twingly/twingly-amqp/tree/v4.4.0) (2018-07-02)
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.3.0...v4.4.0)
 
