@@ -52,6 +52,12 @@ describe Twingly::AMQP::Subscription do
       it { expect { subject }.not_to raise_error }
     end
 
+    context "when the routing_keys argument isn't an array" do
+      let(:routing_keys) { "a-single-routing-key" }
+
+      it { expect { subject }.not_to raise_error }
+    end
+
     context "with max_length set (bounded queue)" do
       let(:max_length) { 10 }
 
