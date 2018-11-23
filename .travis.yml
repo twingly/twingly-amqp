@@ -1,23 +1,10 @@
 language: ruby
 sudo: false
-
 services:
   - rabbitmq
-
 rvm:
   - 2.2
   - 2.4.2
-
 cache: bundler
-
 notifications:
   email: false
-  hipchat:
-    rooms:
-      secure: MhU7c+Ef/vKD9QjfoZvrfZONMZ+hNXtXGwfyhAUECsxNBBGfEOm/7mmdrf/hltLYtCRVTMDnTfnmHOAzg2ocjsLkvUR+pB04pWutLhzKQECJ3gRcERwF4t+hfE7EIkYnlZBDjlBZrj4EmpqhPEMMBq9Z9p5ewMo1cYXnZp39pKfLf7CYyqzBRBdFWseqRDTQPNmglVizLEGdSCpis0SleKvyD3C0cNVnYQeAdRTI65f5hkANb/LbtKxQlp0hs6vHlJT+hUnmwTQd6zcXm/eSBTwl4cLJJW+beX3mHUsqcoyLvUK9YJPCclZtF+OPmUsYu+4HYQM+2wMWy5rvAdSXBfoz5e5QOg9lUPxgt9Gj1zyiUs6nF0J2OyXh9gP+urTWvjrOl+U+zKQ8opH6i45FM82q5wHlHxs4mFooQ0ZWGhMX88kN3QH7V6aQcuNMV5zgPi1HR6sNLFOzLbtCfCeXgT3CWvlOI1V6LzWPkksclHKsO09PkdJRS57O2dg6vFxIkv2rJzuvp3k3B9nbGB9WucbWyBlQSluc65YrLdD6rTzjEuBjwSBtJ0hMNAIBWf9fK4OUvnH5n9zkFJL4mYYY3GISLPrpjxDqjQiPHvq19dNy9mTtYLd7xoK65bA7tvWV1rsthSTooVVK9C6pBLCLyb0GY7r1vGfT999fLm2pKrs=
-    on_success: never
-    on_failure: change
-    template:
-      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}
-        (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
-    format: html
