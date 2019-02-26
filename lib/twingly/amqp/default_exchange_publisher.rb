@@ -1,14 +1,15 @@
-require "twingly/amqp/base_publisher"
+require "twingly/amqp/publisher"
 
 module Twingly
   module AMQP
-    class DefaultExchangePublisher < BasePublisher
-      def initialize(queue_name:, connection: nil)
-        super(connection: connection)
+    class DefaultExchangePublisher
+      include Publisher
 
+      def initialize(queue_name:, connection: nil)
         options.routing_key = queue_name
 
-        @exchange = @connection.create_channel.default_exchange
+        connection ||= Connection.instance
+        @exchange = connection.create_channel.default_exchange
       end
     end
   end

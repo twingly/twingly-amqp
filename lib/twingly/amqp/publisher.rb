@@ -4,11 +4,7 @@ require "ostruct"
 
 module Twingly
   module AMQP
-    class BasePublisher
-      def initialize(connection: nil)
-        @connection = connection || Connection.instance
-      end
-
+    module Publisher
       def publish(message)
         raise ArgumentError unless message.respond_to?(:to_h)
 
@@ -31,7 +27,7 @@ module Twingly
         yield options
       end
 
-      protected
+      private
 
       def options
         @options ||=
