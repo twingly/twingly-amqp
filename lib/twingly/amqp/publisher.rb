@@ -1,4 +1,3 @@
-require "twingly/amqp/connection"
 require "json"
 require "ostruct"
 
