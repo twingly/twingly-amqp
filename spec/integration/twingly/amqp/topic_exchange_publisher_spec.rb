@@ -1,9 +1,10 @@
 require "amqp_queue_context"
+require "publisher_examples"
 
 describe Twingly::AMQP::TopicExchangePublisher do
   include_context "amqp queue"
 
-  let(:payload) { { some: "data" } }
+  let(:amqp_queue) { topic_exchange_queue }
 
   subject do
     described_class.new(
@@ -12,50 +13,9 @@ describe Twingly::AMQP::TopicExchangePublisher do
     )
   end
 
+  include_examples "publisher"
+
   describe "#publish" do
-    [{ some: "data" }, [[:some, "data"]]].each do |payload|
-      context "when given a hash-like payload '#{payload}'" do
-        before do
-          subject.publish_with_confirm(payload)
-        end
-
-        let(:expected_payload) { { some: "data" } }
-
-        it "does publish the message" do
-          _, _, json_payload = topic_exchange_queue.pop
-
-          actual_payload = JSON.parse(json_payload, symbolize_names: true)
-          expect(actual_payload).to eq(expected_payload)
-        end
-      end
-    end
-
-    context "when given a non-hash payload" do
-      let(:payload) { "not a hash" }
-
-      it "raises an ArgumentError" do
-        expect { subject.publish(payload) }.to raise_error(ArgumentError)
-      end
-    end
-
-    context "when customizing publish options" do
-      let(:app_id) { "test-app" }
-
-      before do
-        subject.configure_publish_options do |options|
-          options.app_id = app_id
-        end
-
-        subject.publish_with_confirm(payload)
-      end
-
-      it "does honor the customization" do
-        _, metadata, _ = topic_exchange_queue.pop
-
-        expect(metadata.to_hash).to include(app_id: app_id)
-      end
-    end
-
     context "with routing_key set" do
       let(:routing_key) { "routing.test" }
 
@@ -64,12 +24,12 @@ describe Twingly::AMQP::TopicExchangePublisher do
           options.routing_key = routing_key
         end
 
-        topic_exchange_queue.bind(topic_exchange, routing_key: routing_key)
+        amqp_queue.bind(topic_exchange, routing_key: routing_key)
         subject.publish_with_confirm(payload)
       end
 
       it "does route the message" do
-        _, _, json_payload = topic_exchange_queue.pop
+        _, _, json_payload = amqp_queue.pop
 
         actual_payload = JSON.parse(json_payload, symbolize_names: true)
         expect(actual_payload).to eq(payload)
