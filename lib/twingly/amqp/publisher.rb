@@ -5,11 +5,18 @@ module Twingly
   module AMQP
     module Publisher
       def publish(message)
-        raise ArgumentError unless message.respond_to?(:to_h)
+        payload =
+          if message.kind_of?(Array)
+            message
+          elsif message.respond_to?(:to_h)
+            message.to_h
+          else
+            raise ArgumentError
+          end
 
-        payload = message.to_h.to_json
-        opts    = options.to_h
-        @exchange.publish(payload, opts)
+        json_payload = payload.to_json
+        opts         = options.to_h
+        @exchange.publish(json_payload, opts)
       end
 
       # only used by tests to avoid sleeping
