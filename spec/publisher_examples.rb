@@ -35,8 +35,8 @@ shared_examples "publisher" do
       end
     end
 
-    context "when given a non-hash/non-array payload" do
-      let(:payload) { "not a hash or array" }
+    context "when given an incompatible payload" do
+      let(:payload) { "not a valid payload" }
 
       it "raises an ArgumentError" do
         expect { subject.publish(payload) }.to raise_error(ArgumentError)
