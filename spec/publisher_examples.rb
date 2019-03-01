@@ -1,26 +1,48 @@
+require "ostruct"
+
 shared_examples "publisher" do
   let(:payload) { { some: "data" } }
 
   describe "#publish" do
-    [{ some: "data" }, [[:some, "data"]]].each do |payload|
-      context "when given a hash-like payload '#{payload}'" do
-        before do
-          subject.publish_with_confirm(payload)
-        end
+    let(:json_payload) do
+      _, _, json_payload = amqp_queue.pop
 
-        let(:expected_payload) { { some: "data" } }
+      json_payload
+    end
+
+    let(:actual_payload) { JSON.parse(json_payload, symbolize_names: true) }
+
+    context "when given a valid payload" do
+      before do
+        subject.publish_with_confirm(payload)
+      end
+
+      [
+        { some: "data" },
+        OpenStruct.new(some: "data"),
+        nil,
+      ].each do |payload_object|
+        context "when given a hash-like payload '#{payload_object.inspect}'" do
+          let(:payload) { payload_object }
+          let(:expected_payload) { payload_object.to_h }
+
+          it "does publish the message" do
+            expect(actual_payload).to eq(expected_payload)
+          end
+        end
+      end
+
+      context "when given an array payload" do
+        let(:payload) { ["some", "data", 123] }
 
         it "does publish the message" do
-          _, _, json_payload = amqp_queue.pop
-
-          actual_payload = JSON.parse(json_payload, symbolize_names: true)
-          expect(actual_payload).to eq(expected_payload)
+          expect(actual_payload).to eq(payload)
         end
       end
     end
 
-    context "when given a non-hash payload" do
-      let(:payload) { "not a hash" }
+    context "when given an incompatible payload" do
+      let(:payload) { "not a valid payload" }
 
       it "raises an ArgumentError" do
         expect { subject.publish(payload) }.to raise_error(ArgumentError)
