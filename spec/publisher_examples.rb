@@ -20,10 +20,11 @@ shared_examples "publisher" do
       [
         { some: "data" },
         OpenStruct.new(some: "data"),
+        nil,
       ].each do |payload_object|
         context "when given a hash-like payload '#{payload_object.inspect}'" do
           let(:payload) { payload_object }
-          let(:expected_payload) { { some: "data" } }
+          let(:expected_payload) { payload_object.to_h }
 
           it "does publish the message" do
             expect(actual_payload).to eq(expected_payload)
