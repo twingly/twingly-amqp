@@ -1,5 +1,19 @@
 # Change Log
 
+## [v5.0.0](https://github.com/twingly/twingly-amqp/tree/v5.0.0) (2019-03-01)
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.5.0...v5.0.0)
+
+**Fixed bugs:**
+
+- Publishing an Array raises error or yields unexpected result [\#71](https://github.com/twingly/twingly-amqp/issues/71)
+
+**Merged pull requests:**
+
+- Use more recent rubies on Travis [\#76](https://github.com/twingly/twingly-amqp/pull/76) ([walro](https://github.com/walro))
+- Do not convert Array to Hash when publishing [\#75](https://github.com/twingly/twingly-amqp/pull/75) ([roback](https://github.com/roback))
+- DRY up publisher specs [\#74](https://github.com/twingly/twingly-amqp/pull/74) ([roback](https://github.com/roback))
+- Publisher: Extract all duplicated methods to a base class [\#73](https://github.com/twingly/twingly-amqp/pull/73) ([roback](https://github.com/roback))
+
 ## [v4.5.0](https://github.com/twingly/twingly-amqp/tree/v4.5.0) (2018-09-25)
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v4.4.0...v4.5.0)
 
