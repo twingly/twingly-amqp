@@ -4,7 +4,12 @@ shared_examples "publisher" do
   let(:payload) { { some: "data" } }
 
   describe "#publish" do
-    let(:json_payload)   { amqp_queue.pop.last }
+    let(:json_payload) do
+      _, _, json_payload = amqp_queue.pop
+
+      json_payload
+    end
+
     let(:actual_payload) { JSON.parse(json_payload, symbolize_names: true) }
 
     context "when given a valid payload" do
