@@ -15,7 +15,7 @@ describe Twingly::AMQP::Message do
     }
   end
 
-  subject { described_class.new(message_data) }
+  subject { described_class.new(**message_data) }
   it { is_expected.to respond_to(:delivery_info) }
   it { is_expected.to respond_to(:metadata) }
   it { is_expected.to respond_to(:payload) }

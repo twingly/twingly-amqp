@@ -20,7 +20,7 @@ module Twingly
       end
 
       def ping(urls, options_hash = {})
-        options = PingOptions.new(options_hash)
+        options = PingOptions.new(**options_hash)
         options = @default_ping_options.merge(options)
 
         options.validate
