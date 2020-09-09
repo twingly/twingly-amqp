@@ -230,7 +230,7 @@ To run static code analysis:
 
         bundle exec rake release
 
-    * If you are not logged in as [twingly][twingly-rubygems] with ruby gems, the rake task will fail and tell you to set credentials via `gem push`, do that and run the `release` task again. It will be okay.
+    * If you are not logged in as [twingly][twingly-rubygems] with ruby gems, the rake task will fail. Login using `gem signin` and run the `release` task again. It will be okay.
 
 * Update the changelog with [GitHub Changelog Generator](https://github.com/skywinder/github-changelog-generator/) (`gem install github_changelog_generator` if you don't have it, set `CHANGELOG_GITHUB_TOKEN` to a personal access token to avoid rate limiting by GitHub). This command will update `CHANGELOG.md`, commit and push manually.
 
