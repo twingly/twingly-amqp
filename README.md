@@ -215,10 +215,12 @@ bundle exec rake spec:unit
 
 To run static code analysis:
 
-    bundle exec rubocop
+    gem install rubocop
+
+    rubocop
 
     # optionally on single file(s)
-    bundle exec rubocop lib/twingly/amqp/*
+    rubocop lib/twingly/amqp/*
 
 ## Release workflow
 
