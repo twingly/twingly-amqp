@@ -32,7 +32,7 @@ describe Twingly::AMQP::PingOptions do
           custom_options: custom_options,
         }
       end
-      subject { described_class.new(options) }
+      subject { described_class.new(**options) }
 
       it "should set them" do
         expect(subject.provider_name).to eq(provider_name)
@@ -50,7 +50,7 @@ describe Twingly::AMQP::PingOptions do
       end
 
       it "should raise an exception" do
-        expect { described_class.new(options) }.to raise_error(ArgumentError)
+        expect { described_class.new(**options) }.to raise_error(ArgumentError)
       end
 
       context "when given custom_options not responding to 'to_h'" do
