@@ -13,6 +13,7 @@ module Twingly
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
         @max_length       = max_length
+        @cancel           = false
 
         if routing_key
           warn "[DEPRECATION] `routing_key` is deprecated. "\
