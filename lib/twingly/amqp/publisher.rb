@@ -1,6 +1,3 @@
-require "json"
-require "ostruct"
-
 module Twingly
   module AMQP
     module Publisher

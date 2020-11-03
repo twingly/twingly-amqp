@@ -8,7 +8,10 @@ require "twingly/amqp/publisher"
 require "twingly/amqp/default_exchange_publisher"
 require "twingly/amqp/topic_exchange_publisher"
 require "twingly/amqp/null_logger"
+require "twingly/amqp/message"
 
+require "bunny"
+require "json"
 require "ostruct"
 
 module Twingly

@@ -1,5 +1,3 @@
-require "json"
-
 module Twingly
   module AMQP
     class Message

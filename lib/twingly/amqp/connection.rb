@@ -1,5 +1,3 @@
-require "twingly/amqp"
-
 module Twingly
   module AMQP
     class Connection
