@@ -1,6 +1,3 @@
-require "twingly/amqp/publisher"
-require "twingly/amqp/connection"
-
 module Twingly
   module AMQP
     class TopicExchangePublisher

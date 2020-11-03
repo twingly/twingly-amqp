@@ -1,6 +1,3 @@
-require "twingly/amqp/connection"
-require "twingly/amqp/message"
-
 module Twingly
   module AMQP
     class Subscription

@@ -1,8 +1,3 @@
-require "twingly/amqp/connection"
-require "twingly/amqp/ping_options"
-require "twingly/amqp/default_exchange_publisher"
-require "json"
-
 module Twingly
   module AMQP
     class Pinger
