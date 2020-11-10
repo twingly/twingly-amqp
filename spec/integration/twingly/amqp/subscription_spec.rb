@@ -303,4 +303,33 @@ describe Twingly::AMQP::Subscription do
       end
     end
   end
+
+  describe "#cancel!" do
+    subject! do
+      described_class.new(
+        queue_name:     queue_name,
+        exchange_topic: exchange_topic,
+        routing_key:    routing_key,
+      )
+    end
+
+    before do
+      exchange.publish(payload_json, routing_key: routing_key)
+      exchange.wait_for_confirms
+    end
+
+    context "when blocking is true" do
+      it "cancels the consumer" do
+        subject.each_message do |_|
+          subject.cancel!
+        end
+
+        expect(subject.raw_queue.consumer_count).to eq(0)
+      end
+    end
+
+    context "when blocking is false" do
+      it "cancels the consumer"
+    end
+  end
 end
