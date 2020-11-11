@@ -86,7 +86,7 @@ describe Twingly::AMQP::Subscription do
     end
 
     context "for an empty queue" do
-      specify { expect(subject.message_count).to eq(0) }
+      specify { expect(subject.message_count).to be_zero }
     end
 
     context "for a queue with messages" do
@@ -324,7 +324,7 @@ describe Twingly::AMQP::Subscription do
           subject.cancel!
         end
 
-        expect(subject.raw_queue.consumer_count).to eq(0)
+        expect(subject.raw_queue.consumer_count).to be_zero
       end
     end
 

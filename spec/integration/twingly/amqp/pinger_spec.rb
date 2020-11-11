@@ -45,7 +45,7 @@ describe Twingly::AMQP::Pinger do
 
         sleep ping_expiration / 1000
 
-        expect(default_exchange_queue.message_count).to eq(0)
+        expect(default_exchange_queue.message_count).to be_zero
       end
     end
 
