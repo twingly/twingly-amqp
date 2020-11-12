@@ -15,6 +15,12 @@ describe Twingly::AMQP::Connection do
   describe ".options=" do
     let(:options) { { hosts: %w[host1 host2] } }
 
+    around do |example|
+      old_config = Twingly::AMQP.configuration.connection_options
+      example.run
+      Twingly::AMQP.configuration.connection_options = old_config
+    end
+
     it "updates the configuration" do
       described_class.options = options
 
