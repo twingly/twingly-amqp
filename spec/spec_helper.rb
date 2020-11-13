@@ -8,4 +8,5 @@ ENV["RABBITMQ_01_HOST"] ||= "localhost"
 RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.warnings = true
+  config.order = :random
 end
