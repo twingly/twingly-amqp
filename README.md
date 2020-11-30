@@ -1,7 +1,6 @@
 # Twingly::AMQP
 
-[![Build Status](https://travis-ci.org/twingly/twingly-amqp.svg?branch=master)](https://travis-ci.org/twingly/twingly-amqp)
-
+[![GitHub Build Status](https://github.com/twingly/twingly-amqp/workflows/CI/badge.svg)](https://github.com/twingly/twingly-amqp/actions)
 
 A gem for subscribing and publishing messages via RabbitMQ.
 
