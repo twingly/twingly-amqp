@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    services:
+      rabbitmq:
+        image: rabbitmq:3.8
+        # needed because the rabbitmq container does not provide a healthcheck
+        options: >-
+          --health-cmd "rabbitmq-diagnostics ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5672:5672
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [2.5, 2.6, 2.7, jruby-9.2.13.0]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Ruby ${{ matrix.ruby }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Run tests
+      run: bundle exec rake
+      continue-on-error: ${{ startsWith(matrix.ruby, 'jruby') }}
