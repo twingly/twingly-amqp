@@ -7,6 +7,7 @@ require "twingly/amqp/pinger"
 require "twingly/amqp/publisher"
 require "twingly/amqp/default_exchange_publisher"
 require "twingly/amqp/topic_exchange_publisher"
+require "twingly/amqp/delayed_default_exchange_publisher"
 require "twingly/amqp/null_logger"
 require "twingly/amqp/message"
 
