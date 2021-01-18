@@ -132,6 +132,24 @@ end
 publisher.publish({ my: "data" })
 ```
 
+### Publish delayed messages
+
+```ruby
+publisher = Twingly::AMQP::DelayedPublisher.new(
+  delay_queue_name:     "my_queue.delayed", # Queue where delayed messages will
+                                            #   wait until delay_ms has passed
+  delay_ms:             60_000,
+  target_exchange_name: "", # Optional, which exchange the delayed messages will
+                            #   be published to, defaults to default exchange
+  target_routing_key:   "", # Optional, which routing key the delayed messages
+                            #   will be published with
+)
+
+# Publishes message to the delay queue. After delay_ms has passed,
+#   the message will be rerouted to the exchange/routing key specified above
+publisher.publish({ my: "data" })
+```
+
 ### Ping urls
 
 ```ruby
