@@ -3,7 +3,7 @@ module Twingly
     class Subscription
       def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
                      routing_keys: nil, consumer_threads: 1, prefetch: 20,
-                     connection: nil, max_length: nil)
+                     connection: Connection.instance, max_length: nil)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_keys     = Array(routing_keys || routing_key)
@@ -17,7 +17,6 @@ module Twingly
                "Please use `routing_keys` instead."
         end
 
-        connection ||= Connection.instance
         @channel = create_channel(connection)
         @queue   = @channel.queue(@queue_name, queue_options)
 
