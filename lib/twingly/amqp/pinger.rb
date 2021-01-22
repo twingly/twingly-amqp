@@ -1,9 +1,8 @@
 module Twingly
   module AMQP
     class Pinger
-      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: nil, confirm_publish: false)
+      def initialize(queue_name:, ping_expiration: nil, url_cache: NullCache, connection: Connection.instance, confirm_publish: false)
         @url_cache = url_cache
-        connection ||= Connection.instance
 
         @publisher = DefaultExchangePublisher.new(queue_name: queue_name, connection: connection)
         @publisher.configure_publish_options do |options|
