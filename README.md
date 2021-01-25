@@ -135,7 +135,7 @@ publisher.publish({ my: "data" })
 ### Publish delayed messages
 
 ```ruby
-publisher = Twingly::AMQP::DelayedPublisher.new(
+publisher = Twingly::AMQP::DefaultExchangePublisher.delayed(
   delay_queue_name:     "my_queue.delayed", # Queue where delayed messages will
                                             #   wait until delay_ms has passed
   delay_ms:             60_000,
