@@ -198,6 +198,12 @@ connection = Twingly::AMQP::Connection.instance
 
 The integration tests run by default and require a local RabbitMQ server to run.
 
+Start RabbitMQ server with
+
+```shell
+docker-compose up
+```
+
 Run tests with
 
 ```shell
