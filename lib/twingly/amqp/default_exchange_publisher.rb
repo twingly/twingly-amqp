@@ -3,6 +3,8 @@ module Twingly
     class DefaultExchangePublisher
       include Publisher
 
+      DEFAULT_EXCHANGE = ""
+
       def initialize(queue_name:, connection: nil)
         options.routing_key = queue_name
 
@@ -10,17 +12,11 @@ module Twingly
         @exchange = connection.create_channel.default_exchange
       end
 
-      def self.delayed(delay_queue_name:, delay_ms:, target_exchange_name: "",
-                       target_routing_key: "", connection: Connection.instance)
-        if [target_exchange_name, target_routing_key].all?(&:empty?)
-          raise ArgumentError, "At least one of target_exchange_name or " \
-                                "target_routing_key must be set"
-        end
-
+      def self.delayed(delay_queue_name:, delay_ms:, target_queue_name:, connection: Connection.instance)
         Utilities.create_queue(delay_queue_name,
                                arguments: {
-                                 "x-dead-letter-exchange":    target_exchange_name,
-                                 "x-dead-letter-routing-key": target_routing_key,
+                                 "x-dead-letter-exchange":    DEFAULT_EXCHANGE,
+                                 "x-dead-letter-routing-key": target_queue_name,
                                })
 
         new(queue_name: delay_queue_name, connection: connection).tap do |publisher|
