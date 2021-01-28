@@ -138,8 +138,8 @@ publisher.publish({ my: "data" })
 publisher = Twingly::AMQP::DefaultExchangePublisher.delayed(
   delay_queue_name:  "my_queue.delayed", # Queue where delayed messages will
                                          #   wait until delay_ms has passed
-  target_queue_name: "my_queue",         # Queue the delayed messages will be
-                                         #   published to after the delay
+  target_queue_name: "my_queue",         # Queue which delayed messages will be
+                                         #   published to after the delay has elapsed
   delay_ms:          60_000,
 )
 
