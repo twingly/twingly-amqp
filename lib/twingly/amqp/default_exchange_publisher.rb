@@ -12,7 +12,7 @@ module Twingly
         @exchange = connection.create_channel.default_exchange
       end
 
-      def self.delayed(delay_queue_name:, delay_ms:, target_queue_name:, connection: Connection.instance)
+      def self.delayed(delay_queue_name:, target_queue_name:, delay_ms:, connection: Connection.instance)
         Utilities.create_queue(delay_queue_name,
                                arguments: {
                                  "x-dead-letter-exchange":    DEFAULT_EXCHANGE,
