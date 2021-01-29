@@ -45,9 +45,10 @@ describe Twingly::AMQP::DefaultExchangePublisher do
       subject { delay_queue_publisher.publish_with_confirm(payload) }
 
       it "creates a queue for delayed messages" do
-        subject
-
-        expect(amqp_connection.queue_exists?(delay_queue_name)).to eq(true)
+        expect{ subject }
+          .to change { amqp_connection.queue_exists?(delay_queue_name) }
+          .from(false)
+          .to(true)
       end
 
       it "publishes message to target queue after delay has passed" do
