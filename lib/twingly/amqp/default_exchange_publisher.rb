@@ -5,10 +5,9 @@ module Twingly
 
       DEFAULT_EXCHANGE = ""
 
-      def initialize(queue_name:, connection: nil)
+      def initialize(queue_name:, connection: Connection.instance)
         options.routing_key = queue_name
 
-        connection ||= Connection.instance
         @exchange = connection.create_channel.default_exchange
       end
 
