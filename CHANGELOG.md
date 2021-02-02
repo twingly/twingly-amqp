@@ -1,5 +1,29 @@
 # Changelog
 
+## [v5.2.0](https://github.com/twingly/twingly-amqp/tree/v5.2.0) (2021-02-02)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v5.0.1...v5.2.0)
+
+**Implemented enhancements:**
+
+- Various warnings [\#85](https://github.com/twingly/twingly-amqp/issues/85)
+
+**Fixed bugs:**
+
+- Specs fail when random order is set [\#90](https://github.com/twingly/twingly-amqp/issues/90)
+
+**Merged pull requests:**
+
+- Add docker compose file for testing [\#95](https://github.com/twingly/twingly-amqp/pull/95) ([Pontus4](https://github.com/Pontus4))
+- Set connection instance as default argument [\#94](https://github.com/twingly/twingly-amqp/pull/94) ([walro](https://github.com/walro))
+- Add functionality for publishing delayed messages [\#93](https://github.com/twingly/twingly-amqp/pull/93) ([roback](https://github.com/roback))
+- CI on GitHub actions [\#92](https://github.com/twingly/twingly-amqp/pull/92) ([walro](https://github.com/walro))
+- Spec improvements [\#91](https://github.com/twingly/twingly-amqp/pull/91) ([Pontus4](https://github.com/Pontus4))
+- Add specs for Subscription\#cancel! [\#89](https://github.com/twingly/twingly-amqp/pull/89) ([Pontus4](https://github.com/Pontus4))
+- Run CI tests on JRuby [\#88](https://github.com/twingly/twingly-amqp/pull/88) ([Pontus4](https://github.com/Pontus4))
+- Remove requires from individual components [\#87](https://github.com/twingly/twingly-amqp/pull/87) ([Pontus4](https://github.com/Pontus4))
+- Fix release instructions [\#84](https://github.com/twingly/twingly-amqp/pull/84) ([walro](https://github.com/walro))
+
 ## [v5.0.1](https://github.com/twingly/twingly-amqp/tree/v5.0.1) (2020-09-09)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v5.0.0...v5.0.1)
