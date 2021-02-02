@@ -1,6 +1,7 @@
 require "twingly/amqp/version"
 require "twingly/amqp/session"
 require "twingly/amqp/connection"
+require "twingly/amqp/utilities"
 require "twingly/amqp/subscription"
 require "twingly/amqp/ping_options"
 require "twingly/amqp/pinger"
