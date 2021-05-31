@@ -24,11 +24,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - { ruby: 2.5.8 }
-        - { ruby: 2.6.6 }
-        - { ruby: 2.7.2 }
-        - { ruby: 3.0.0 }
-        - { ruby: jruby-9.2.13.0, allow-failure: true }
+        - { ruby: 2.6.7 }
+        - { ruby: 2.7.3 }
+        - { ruby: 3.0.1 }
+        - { ruby: jruby-9.2.17.0, allow-failure: true }
 
     steps:
     - name: Checkout code
