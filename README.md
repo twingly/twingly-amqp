@@ -59,6 +59,8 @@ subscription = Twingly::AMQP::Subscription.new(
   consumer_threads: 4,                     # Optional
   prefetch:         20,                    # Optional
   max_length:       10_000,                # Optional
+  queue_type:       :classic,              # Optional, which type of queue to create,
+                                           # possible values are :classic or :quorum
 )
 
 subscription.on_exception { |exception| puts "Oh noes! #{exception.message}" }
@@ -141,6 +143,8 @@ publisher = Twingly::AMQP::DefaultExchangePublisher.delayed(
   target_queue_name: "my_queue",         # Queue which delayed messages will be
                                          #   published to after the delay has elapsed
   delay_ms:          60_000,
+  delay_queue_type:  :classic,           # Optional. Which type of queue to define the delay
+                                         # queue as. Possible values are :classic or :quorum
 )
 
 # Publishes message to the delay queue. After delay_ms has passed,

@@ -60,6 +60,32 @@ describe Twingly::AMQP::Utilities do
           end
         end
       end
+
+      describe "queue_type:" do
+        subject(:queue_type) { created_queue.arguments["x-queue-type"] }
+
+        context "by default" do
+          it { is_expected.to be_nil }
+        end
+
+        context "with queue_type: :classic" do
+          before { options[:queue_type] = :classic }
+
+          it { is_expected.to be_nil }
+        end
+
+        context "with queue_type: :quorum" do
+          before { options[:queue_type] = :quorum }
+
+          it { is_expected.to eq("quorum") }
+        end
+
+        context "with queue_type: :not_supported" do
+          before { options[:queue_type] = :not_supported }
+
+          it { expect { queue_type }.to raise_error(ArgumentError, "Unknown queue type 'not_supported'") }
+        end
+      end
     end
   end
 end

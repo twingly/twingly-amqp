@@ -37,6 +37,28 @@ describe Twingly::AMQP::DefaultExchangePublisher do
 
     it { is_expected.to be_a(described_class) }
 
+    context "setting the delay_queue_type to :quorum" do
+      subject(:delay_queue_publisher) do
+        described_class.delayed(
+          delay_queue_name:  delay_queue_name,
+          target_queue_name: target_queue_name,
+          delay_ms:          delay_ms,
+          delay_queue_type:  :quorum,
+          connection:        amqp_connection,
+        )
+      end
+
+      before { allow(Twingly::AMQP::Utilities).to receive(:create_queue) }
+
+      it "uses 'Utilities.create_queue' to create a quorum queue" do
+        delay_queue_publisher
+
+        expect(Twingly::AMQP::Utilities)
+          .to have_received(:create_queue)
+          .with(delay_queue_name, hash_including(queue_type: :quorum))
+      end
+    end
+
     describe "#publish" do
       let(:delay_ms)      { 100 }
       let(:delay_seconds) { delay_ms.to_f / 1000 }

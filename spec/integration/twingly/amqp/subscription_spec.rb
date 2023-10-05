@@ -76,6 +76,40 @@ describe Twingly::AMQP::Subscription do
     end
   end
 
+  describe "queue_type" do
+    subject(:queue_type) { subscriber.raw_queue.arguments["x-queue-type"] }
+
+    let(:queue_options) { {} }
+    let(:subscriber) do
+      described_class.new(
+        queue_name: "#{queue_name}.quorum",
+        **queue_options,
+      )
+    end
+
+    after { subscriber.raw_queue.delete }
+
+    it "creates a queue with the default queue type (classic)" do
+      expect(queue_type).to be_nil
+    end
+
+    context "with queue_type set to :classic" do
+      let(:queue_options) { { queue_type: :classic } }
+
+      it "creates a queue with the default queue type (classic)" do
+        expect(queue_type).to be_nil
+      end
+    end
+
+    context "with queue_type set to :quorum" do
+      let(:queue_options) { { queue_type: :quorum } }
+
+      it "creates a quorum queue" do
+        expect(queue_type).to eq("quorum")
+      end
+    end
+  end
+
   describe "#message_count" do
     subject! do
       described_class.new(
