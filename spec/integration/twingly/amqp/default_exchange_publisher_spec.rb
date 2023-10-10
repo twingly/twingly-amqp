@@ -37,7 +37,7 @@ describe Twingly::AMQP::DefaultExchangePublisher do
 
     it { is_expected.to be_a(described_class) }
 
-    context "setting the delay_queue_type to :quorum" do
+    context "with delay_queue_type set to :quorum" do
       subject(:delay_queue_publisher) do
         described_class.delayed(
           delay_queue_name:  delay_queue_name,
