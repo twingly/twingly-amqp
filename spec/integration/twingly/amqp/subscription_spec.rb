@@ -329,7 +329,11 @@ describe Twingly::AMQP::Subscription do
     end
 
     context "when blocking is false" do
-      it "cancels the consumer"
+      it "cancels the consumer" do
+        subject.each_message(blocking: false) { |_| }
+
+        expect { subject.cancel! }.to change { subject.raw_queue.consumer_count }.from(1).to(0)
+      end
     end
   end
 end
