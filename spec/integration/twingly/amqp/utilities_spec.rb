@@ -39,15 +39,23 @@ describe Twingly::AMQP::Utilities do
         context "with durable: false" do
           before { options[:durable] = false }
 
-          it { is_expected.to be false }
+          it { expect { created_queue }.to raise_error(ArgumentError, "durable: false is not supported by quorum queues") }
+
+          context "when queue_type is :classic" do
+            before { options[:queue_type] = :classic }
+
+            it { is_expected.to be false }
+          end
         end
       end
 
       describe "arguments:" do
         subject { created_queue.arguments }
 
+        let(:default_queue_arguments) { { "x-queue-type" => "quorum" } }
+
         context "by default" do
-          it { is_expected.to be_empty }
+          it { is_expected.to eq(default_queue_arguments) }
         end
 
         context "with a hash containing optional queue arguments" do
@@ -56,7 +64,7 @@ describe Twingly::AMQP::Utilities do
           before { options[:arguments] = arguments_hash }
 
           it "creates queue with the given arguments" do
-            is_expected.to eq(arguments_hash)
+            is_expected.to eq(default_queue_arguments.merge(arguments_hash))
           end
         end
       end
@@ -65,19 +73,19 @@ describe Twingly::AMQP::Utilities do
         subject(:queue_type) { created_queue.arguments["x-queue-type"] }
 
         context "by default" do
-          it { is_expected.to be_nil }
-        end
-
-        context "with queue_type: :classic" do
-          before { options[:queue_type] = :classic }
-
-          it { is_expected.to be_nil }
+          it { is_expected.to eq("quorum") }
         end
 
         context "with queue_type: :quorum" do
           before { options[:queue_type] = :quorum }
 
           it { is_expected.to eq("quorum") }
+        end
+
+        context "with queue_type: :classic" do
+          before { options[:queue_type] = :classic }
+
+          it { is_expected.to be_nil }
         end
 
         context "with queue_type: :not_supported" do

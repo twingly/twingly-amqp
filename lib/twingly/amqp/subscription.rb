@@ -4,7 +4,7 @@ module Twingly
       def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
                      routing_keys: nil, consumer_threads: 1, prefetch: 20,
                      connection: Connection.instance, max_length: nil,
-                     queue_type: :classic)
+                     queue_type: :quorum)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_keys     = Array(routing_keys || routing_key)
@@ -101,10 +101,10 @@ module Twingly
 
       def create_queue
         case @queue_type
-        when :classic
-          @channel.queue(@queue_name, queue_options)
         when :quorum
           @channel.quorum_queue(@queue_name, queue_options)
+        when :classic
+          @channel.queue(@queue_name, queue_options)
         else
           raise ArgumentError, "Unknown queue type #{@queue_type}"
         end

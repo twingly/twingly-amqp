@@ -85,16 +85,8 @@ describe Twingly::AMQP::Subscription do
     describe "queue_type" do
       subject(:queue_type) { queue.raw_queue.arguments["x-queue-type"] }
 
-      it "creates a queue with the default queue type (classic)" do
-        expect(queue_type).to be_nil
-      end
-
-      context "with queue_type set to :classic" do
-        let(:queue_options) { { queue_type: :classic } }
-
-        it "creates a queue with the default queue type (classic)" do
-          expect(queue_type).to be_nil
-        end
+      it "creates a queue with the default queue type (quorum)" do
+        expect(queue_type).to eq("quorum")
       end
 
       context "with queue_type set to :quorum" do
@@ -102,6 +94,14 @@ describe Twingly::AMQP::Subscription do
 
         it "creates a quorum queue" do
           expect(queue_type).to eq("quorum")
+        end
+      end
+
+      context "with queue_type set to :classic" do
+        let(:queue_options) { { queue_type: :classic } }
+
+        it "creates a queue with the default queue type (classic)" do
+          expect(queue_type).to be_nil
         end
       end
     end
@@ -351,7 +351,8 @@ describe Twingly::AMQP::Subscription do
 
     context "when blocking is true" do
       it "cancels the consumer" do
-        subject.each_message do |_|
+        subject.each_message do |message|
+          message.ack
           subject.cancel!
         end
 
@@ -361,7 +362,7 @@ describe Twingly::AMQP::Subscription do
 
     context "when blocking is false" do
       it "cancels the consumer" do
-        subject.each_message(blocking: false) { |_| }
+        subject.each_message(blocking: false) { |message| message.ack }
 
         expect { subject.cancel! }.to change { subject.raw_queue.consumer_count }.from(1).to(0)
       end

@@ -9,7 +9,7 @@ shared_context "amqp queue" do
 
   let(:default_exchange_queue) do
     channel = amqp_connection.create_channel
-    channel.queue(queue_name, durable: true)
+    channel.quorum_queue(queue_name)
   end
 
   let(:topic_exchange) do
@@ -18,7 +18,7 @@ shared_context "amqp queue" do
 
   let(:topic_exchange_queue) do
     channel = amqp_connection.create_channel
-    queue   = channel.queue(topic_queue_name)
+    queue   = channel.quorum_queue(topic_queue_name)
 
     queue.bind(topic_exchange)
   end

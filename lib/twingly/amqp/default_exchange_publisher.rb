@@ -11,7 +11,7 @@ module Twingly
         @exchange = connection.create_channel.default_exchange
       end
 
-      def self.delayed(delay_queue_name:, target_queue_name:, delay_ms:, delay_queue_type: :classic,
+      def self.delayed(delay_queue_name:, target_queue_name:, delay_ms:, delay_queue_type: :quorum,
                        connection: Connection.instance)
         Utilities.create_queue(delay_queue_name,
                                arguments: {
