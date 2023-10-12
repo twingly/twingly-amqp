@@ -16,7 +16,7 @@ module Twingly
         @exchange.publish(json_payload, opts)
       end
 
-      # only used by tests to avoid sleeping
+      # Only used by tests to lessen the time we need to sleep
       def publish_with_confirm(message)
         channel = @exchange.channel
         channel.confirm_select unless channel.using_publisher_confirmations?

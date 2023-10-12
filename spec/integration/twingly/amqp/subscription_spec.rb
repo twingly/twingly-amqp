@@ -23,6 +23,15 @@ describe Twingly::AMQP::Subscription do
     channel.topic(exchange_topic, durable: true)
   end
 
+  def wait_for_messages_to_be_consumed
+    # Publisher confirms just waits for messages to be persisted to a queue, it doesn't wait for
+    # messages to be consumed from the queue, see https://github.com/twingly/twingly-amqp/issues/102
+    exchange.wait_for_confirms
+
+    # Sleep for a while to make sure the subscriber has time to consume the messages from the queue
+    sleep 0.5
+  end
+
   describe "#initialize" do
     subject! do
       described_class.new(
@@ -66,7 +75,7 @@ describe Twingly::AMQP::Subscription do
           (2 * max_length).times do
             exchange.publish(payload_json, routing_key: routing_key)
           end
-          exchange.wait_for_confirms
+          wait_for_messages_to_be_consumed
         end
 
         it "ensures only max_length messages are queued" do
@@ -94,7 +103,7 @@ describe Twingly::AMQP::Subscription do
         message_count.times do
           exchange.publish(payload_json, routing_key: routing_key)
         end
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
       end
 
       let(:message_count) { 3 }
@@ -127,7 +136,7 @@ describe Twingly::AMQP::Subscription do
     context "when message has same routing key" do
       it "should receive the message published on the exchange" do
         exchange.publish(payload_json, routing_key: routing_key)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         received_url = nil
         subject.each_message do |message|
@@ -155,7 +164,7 @@ describe Twingly::AMQP::Subscription do
           exchange.publish({ url: url }.to_json, routing_key: routing_key)
         end
 
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         received_urls = []
         subject.each_message do |message|
@@ -179,7 +188,7 @@ describe Twingly::AMQP::Subscription do
         end
 
         exchange.publish(payload_json, routing_key: routing_key)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         received_url = nil
         subject.each_message do |message|
@@ -194,7 +203,7 @@ describe Twingly::AMQP::Subscription do
     context "when a before_handle_message callback has been set" do
       it "should call the callback" do
         exchange.publish(payload_json, routing_key: routing_key)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         unparsed_payload = nil
         subject.before_handle_message do |raw_payload|
@@ -209,7 +218,7 @@ describe Twingly::AMQP::Subscription do
     context "when an error is raised" do
       it "should call error callback" do
         exchange.publish("this is not json", routing_key: routing_key)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         on_exception_called = false
         subject.on_exception do |_|
@@ -234,7 +243,7 @@ describe Twingly::AMQP::Subscription do
           expect(logger).to receive(:error)
 
           exchange.publish("this is not json", routing_key: routing_key)
-          exchange.wait_for_confirms
+          wait_for_messages_to_be_consumed
 
           subject.on_exception do |_|
             subject.cancel!
@@ -259,7 +268,7 @@ describe Twingly::AMQP::Subscription do
 
       it "should subscribe to default exchange" do
         default_exchange.publish(payload_json, routing_key: queue_name)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         received_url = nil
         subject.each_message do |message|
@@ -278,7 +287,7 @@ describe Twingly::AMQP::Subscription do
 
       it "should be non-blocking" do
         exchange.publish(payload_json, routing_key: routing_key)
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         is_non_blocking = false
         subject.each_message(blocking: false) { |_| }
@@ -297,7 +306,7 @@ describe Twingly::AMQP::Subscription do
           exchange.publish(payload_json, routing_key: routing_key)
         end
 
-        exchange.wait_for_confirms
+        wait_for_messages_to_be_consumed
 
         expect(received_urls.count).to eq(message_count)
       end
@@ -315,7 +324,7 @@ describe Twingly::AMQP::Subscription do
 
     before do
       exchange.publish(payload_json, routing_key: routing_key)
-      exchange.wait_for_confirms
+      wait_for_messages_to_be_consumed
     end
 
     context "when blocking is true" do
