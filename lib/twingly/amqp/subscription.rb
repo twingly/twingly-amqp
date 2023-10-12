@@ -12,7 +12,7 @@ module Twingly
         @max_length       = max_length
         @cancel           = false
         @consumer         = nil
-        @blocking         = nil
+        @blocking         = false
 
         if routing_key
           warn "[DEPRECATION] `routing_key` is deprecated. "\
