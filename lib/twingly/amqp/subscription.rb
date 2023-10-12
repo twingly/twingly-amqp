@@ -13,6 +13,8 @@ module Twingly
         @max_length       = max_length
         @queue_type       = queue_type
         @cancel           = false
+        @consumer         = nil
+        @blocking         = false
 
         if routing_key
           warn "[DEPRECATION] `routing_key` is deprecated. "\
@@ -35,12 +37,13 @@ module Twingly
       end
 
       def each_message(blocking: true, &block)
-        consumer = create_consumer(&block)
+        @blocking = blocking
+        @consumer = create_consumer(&block)
 
-        if blocking
+        if @blocking
           sleep 0.01 until cancel?
 
-          consumer.cancel
+          @consumer.cancel
         end
       end
 
@@ -65,6 +68,7 @@ module Twingly
       end
 
       def cancel!
+        @consumer.cancel unless @blocking
         @cancel = true
       end
 
