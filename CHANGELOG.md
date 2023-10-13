@@ -1,5 +1,24 @@
 # Changelog
 
+## [v6.0.0](https://github.com/twingly/twingly-amqp/tree/v6.0.0) (2023-10-13)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v5.2.0...v6.0.0)
+
+**Fixed bugs:**
+
+- Wait for messages correctly in specs [\#102](https://github.com/twingly/twingly-amqp/issues/102)
+- `cancel!` does nothing for a "non-blocking" subscriber [\#86](https://github.com/twingly/twingly-amqp/issues/86)
+
+**Merged pull requests:**
+
+- Make sure Subscriber tests wait for messages to be consumed [\#103](https://github.com/twingly/twingly-amqp/pull/103) ([roback](https://github.com/roback))
+- Make it possible to cancel non-blocking subscribers [\#101](https://github.com/twingly/twingly-amqp/pull/101) ([roback](https://github.com/roback))
+- Use quorum queues by default instead of classic queues [\#100](https://github.com/twingly/twingly-amqp/pull/100) ([roback](https://github.com/roback))
+- Keep GitHub Actions file up-to-date [\#99](https://github.com/twingly/twingly-amqp/pull/99) ([roback](https://github.com/roback))
+- Test with latest Rubies [\#98](https://github.com/twingly/twingly-amqp/pull/98) ([roback](https://github.com/roback))
+- Test with latest Rubies [\#97](https://github.com/twingly/twingly-amqp/pull/97) ([walro](https://github.com/walro))
+- Ruby 3.0.0 on CI [\#96](https://github.com/twingly/twingly-amqp/pull/96) ([walro](https://github.com/walro))
+
 ## [v5.2.0](https://github.com/twingly/twingly-amqp/tree/v5.2.0) (2021-02-02)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v5.0.1...v5.2.0)
