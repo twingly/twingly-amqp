@@ -3,13 +3,15 @@ module Twingly
     class Subscription
       def initialize(queue_name:, exchange_topic: nil, routing_key: nil,
                      routing_keys: nil, consumer_threads: 1, prefetch: 20,
-                     connection: Connection.instance, max_length: nil)
+                     connection: Connection.instance, max_length: nil,
+                     queue_type: :quorum)
         @queue_name       = queue_name
         @exchange_topic   = exchange_topic
         @routing_keys     = Array(routing_keys || routing_key)
         @consumer_threads = consumer_threads
         @prefetch         = prefetch
         @max_length       = max_length
+        @queue_type       = queue_type
         @cancel           = false
         @consumer         = nil
         @blocking         = false
@@ -20,7 +22,7 @@ module Twingly
         end
 
         @channel = create_channel(connection)
-        @queue   = @channel.queue(@queue_name, queue_options)
+        @queue   = create_queue
 
         if @exchange_topic && @routing_keys.any?
           exchange = @channel.topic(@exchange_topic, durable: true)
@@ -95,6 +97,17 @@ module Twingly
           @on_exception_callback.call(exception)
         end
         channel
+      end
+
+      def create_queue
+        case @queue_type
+        when :quorum
+          @channel.quorum_queue(@queue_name, queue_options)
+        when :classic
+          @channel.queue(@queue_name, queue_options)
+        else
+          raise ArgumentError, "Unknown queue type #{@queue_type}"
+        end
       end
 
       def queue_options

@@ -33,38 +33,34 @@ describe Twingly::AMQP::Subscription do
   end
 
   describe "#initialize" do
-    subject! do
+    subject(:queue) do
       described_class.new(
         queue_name:     queue_name + ".bounded",
         exchange_topic: exchange_topic,
         routing_keys:   routing_keys,
         max_length:     max_length,
+        **queue_options,
       )
     end
     let(:max_length) { nil }
+    let(:queue_options) { {} }
 
     after do
-      subject.raw_queue.delete
+      queue.raw_queue.delete
     end
 
-    specify { expect(subject).to be_a(described_class) }
+    specify { expect(queue).to be_a(described_class) }
 
     context "when using the deprecated routing_key argument" do
-      subject do
-        described_class.new(
-          queue_name:     queue_name,
-          exchange_topic: exchange_topic,
-          routing_key:    routing_key,
-        )
-      end
+      let(:queue_options) { { routing_key: routing_key } }
 
-      it { expect { subject }.not_to raise_error }
+      it { expect { queue }.not_to raise_error }
     end
 
     context "when the routing_keys argument isn't an array" do
       let(:routing_keys) { "a-single-routing-key" }
 
-      it { expect { subject }.not_to raise_error }
+      it { expect { queue }.not_to raise_error }
     end
 
     context "with max_length set (bounded queue)" do
@@ -72,6 +68,8 @@ describe Twingly::AMQP::Subscription do
 
       context "when overpublished" do
         before do
+          queue
+
           (2 * max_length).times do
             exchange.publish(payload_json, routing_key: routing_key)
           end
@@ -79,7 +77,31 @@ describe Twingly::AMQP::Subscription do
         end
 
         it "ensures only max_length messages are queued" do
-          expect(subject.message_count).to eq(max_length)
+          expect(queue.message_count).to eq(max_length)
+        end
+      end
+    end
+
+    describe "queue_type" do
+      subject(:queue_type) { queue.raw_queue.arguments["x-queue-type"] }
+
+      it "creates a queue with the default queue type (quorum)" do
+        expect(queue_type).to eq("quorum")
+      end
+
+      context "with queue_type set to :quorum" do
+        let(:queue_options) { { queue_type: :quorum } }
+
+        it "creates a quorum queue" do
+          expect(queue_type).to eq("quorum")
+        end
+      end
+
+      context "with queue_type set to :classic" do
+        let(:queue_options) { { queue_type: :classic } }
+
+        it "creates a queue with the default queue type (classic)" do
+          expect(queue_type).to be_nil
         end
       end
     end
@@ -329,7 +351,8 @@ describe Twingly::AMQP::Subscription do
 
     context "when blocking is true" do
       it "cancels the consumer" do
-        subject.each_message do |_|
+        subject.each_message do |message|
+          message.ack
           subject.cancel!
         end
 
@@ -339,7 +362,7 @@ describe Twingly::AMQP::Subscription do
 
     context "when blocking is false" do
       it "cancels the consumer" do
-        subject.each_message(blocking: false) { |_| }
+        subject.each_message(blocking: false) { |message| message.ack }
 
         expect { subject.cancel! }.to change { subject.raw_queue.consumer_count }.from(1).to(0)
       end
