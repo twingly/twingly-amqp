@@ -132,6 +132,9 @@ publisher.configure_publish_options do |options|
 end
 
 publisher.publish({ my: "data" })
+
+publisher.publish({ my: "other_data" }, routing_key: "my_other_key") # Override routing_key or other publishing options
+                                                                     # accepted by Bunny::Exchange#publish
 ```
 
 ### Publish delayed messages

@@ -1,7 +1,7 @@
 module Twingly
   module AMQP
     module Publisher
-      def publish(message)
+      def publish(message, opts = {})
         payload =
           if message.kind_of?(Array)
             message
@@ -11,17 +11,17 @@ module Twingly
             raise ArgumentError
           end
 
-        json_payload = payload.to_json
-        opts         = options.to_h
-        @exchange.publish(json_payload, opts)
+        json_payload       = payload.to_json
+        publishing_options = options.to_h.merge(opts)
+        @exchange.publish(json_payload, publishing_options)
       end
 
       # Only used by tests to lessen the time we need to sleep
-      def publish_with_confirm(message)
+      def publish_with_confirm(message, opts = {})
         channel = @exchange.channel
         channel.confirm_select unless channel.using_publisher_confirmations?
 
-        publish(message)
+        publish(message, opts)
 
         @exchange.wait_for_confirms
       end
