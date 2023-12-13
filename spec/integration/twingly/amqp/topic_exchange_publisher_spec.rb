@@ -55,6 +55,26 @@ describe Twingly::AMQP::TopicExchangePublisher do
           .to raise_error(Bunny::PreconditionFailed)
       end
     end
+
+    context "with routing_key given to #publish" do
+      let(:routing_key) { "routing.test.used" }
+
+      before do
+        subject.configure_publish_options do |options|
+          options.routing_key = "routing.test.not_used"
+        end
+
+        amqp_queue.bind(topic_exchange, routing_key: routing_key)
+        subject.publish_with_confirm(payload, routing_key: routing_key)
+      end
+
+      it "overrides the previously set routing_key" do
+        _, _, json_payload = amqp_queue.pop
+
+        actual_payload = JSON.parse(json_payload, symbolize_names: true)
+        expect(actual_payload).to eq(payload)
+      end
+    end
   end
 
   describe "#configure_publish_options" do
