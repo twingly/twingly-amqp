@@ -1,5 +1,17 @@
 # Changelog
 
+## [v6.1.0](https://github.com/twingly/twingly-amqp/tree/v6.1.0) (2023-12-13)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.0.0...v6.1.0)
+
+**Implemented enhancements:**
+
+- Let TopicExchangePublisher\#publish accept routing\_key [\#60](https://github.com/twingly/twingly-amqp/issues/60)
+
+**Merged pull requests:**
+
+- Make it possible to override publishing options [\#104](https://github.com/twingly/twingly-amqp/pull/104) ([roback](https://github.com/roback))
+
 ## [v6.0.0](https://github.com/twingly/twingly-amqp/tree/v6.0.0) (2023-10-13)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v5.2.0...v6.0.0)
