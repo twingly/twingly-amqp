@@ -237,8 +237,8 @@ describe Twingly::AMQP::Subscription do
       end
     end
 
-    context "when an error is raised" do
-      it "should call error callback" do
+    context "when an exception is raised" do
+      it "should call exception callback" do
         exchange.publish("this is not json", routing_key: routing_key)
         wait_for_messages_to_be_consumed
 
@@ -261,7 +261,7 @@ describe Twingly::AMQP::Subscription do
           end
         end
 
-        it "logs the error" do
+        it "logs the exception" do
           expect(logger).to receive(:error)
 
           exchange.publish("this is not json", routing_key: routing_key)
@@ -271,6 +271,42 @@ describe Twingly::AMQP::Subscription do
             subject.cancel!
           end
           subject.each_message { |_| subject.cancel! }
+        end
+      end
+    end
+
+    context "when a channel error occurs" do
+      def simulate_channel_error(channel)
+        channel_error_code = 406
+        channel_error_message =
+          "PRECONDITION_FAILED - delivery acknowledgement on channel #{channel.id} timed out."
+        channel.instance_variable_get(:@on_error).call(
+          channel,
+          AMQ::Protocol::Channel::Close.new(
+            channel_error_code,
+            channel_error_message,
+            0,
+            0
+          )
+        )
+      end
+
+      it "should call error callback" do
+        on_error_called = false
+        subject.on_error do |channel, channel_error|
+          on_error_called = true
+        end
+
+        simulate_channel_error(subject.raw_queue.channel)
+
+        expect(on_error_called).to eq(true)
+      end
+
+      context "when no error callback is configured" do
+        it "should raise a default error" do
+          expect do
+            simulate_channel_error(subject.raw_queue.channel)
+          end.to raise_error(RuntimeError, "Channel closed unexpectedly")
         end
       end
     end
