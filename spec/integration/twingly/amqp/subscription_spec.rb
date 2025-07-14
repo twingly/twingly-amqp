@@ -292,14 +292,10 @@ describe Twingly::AMQP::Subscription do
       end
 
       it "should call error callback" do
-        on_error_called = false
-        subject.on_error do |channel, channel_error|
-          on_error_called = true
-        end
-
-        simulate_channel_error(subject.raw_queue.channel)
-
-        expect(on_error_called).to eq(true)
+        expect do |block|
+          subject.on_error(&block)
+          simulate_channel_error(subject.raw_queue.channel)
+        end.to yield_with_args(subject.raw_queue.channel, be_kind_of(AMQ::Protocol::Channel::Close))
       end
 
       context "when no error callback is configured" do
