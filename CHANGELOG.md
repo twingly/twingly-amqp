@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.2.0](https://github.com/twingly/twingly-amqp/tree/v6.2.0) (2025-07-15)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.1.0...v6.2.0)
+
+**Merged pull requests:**
+
+- Add channel error callback to Subscription [\#106](https://github.com/twingly/twingly-amqp/pull/106) ([vikiv480](https://github.com/vikiv480))
+
 ## [v6.1.0](https://github.com/twingly/twingly-amqp/tree/v6.1.0) (2023-12-13)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.0.0...v6.1.0)
