@@ -34,6 +34,7 @@ module Twingly
 
         @before_handle_message_callback = proc {}
         @on_exception_callback          = proc {}
+        @on_error_callback              = proc { raise "Channel closed unexpectedly" }
       end
 
       def each_message(blocking: true, &block)
@@ -53,6 +54,10 @@ module Twingly
 
       def on_exception(&block)
         @on_exception_callback = block
+      end
+
+      def on_error(&block)
+        @on_error_callback = block
       end
 
       def message_count
@@ -95,6 +100,9 @@ module Twingly
         channel.on_uncaught_exception do |exception, _|
           Twingly::AMQP.configuration.logger.error(exception)
           @on_exception_callback.call(exception)
+        end
+        channel.on_error do |ch, ch_err|
+          @on_error_callback.call(ch, ch_err)
         end
         channel
       end
