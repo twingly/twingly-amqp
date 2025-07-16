@@ -297,14 +297,6 @@ describe Twingly::AMQP::Subscription do
           simulate_channel_error(subject.raw_queue.channel)
         end.to yield_with_args(subject.raw_queue.channel, be_kind_of(AMQ::Protocol::Channel::Close))
       end
-
-      context "when no error callback is configured" do
-        it "should raise a default error" do
-          expect do
-            simulate_channel_error(subject.raw_queue.channel)
-          end.to raise_error(RuntimeError, "Channel closed unexpectedly")
-        end
-      end
     end
 
     context "without exchange_topic and routing_key" do

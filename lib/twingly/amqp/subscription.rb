@@ -34,7 +34,7 @@ module Twingly
 
         @before_handle_message_callback = proc {}
         @on_exception_callback          = proc {}
-        @on_error_callback              = proc { raise "Channel closed unexpectedly" }
+        @on_error_callback              = proc {}
       end
 
       def each_message(blocking: true, &block)
