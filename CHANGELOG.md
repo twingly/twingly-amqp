@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.2.1](https://github.com/twingly/twingly-amqp/tree/v6.2.1) (2025-07-16)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.2.0...v6.2.1)
+
+**Merged pull requests:**
+
+- Fix default `on_error` callback [\#107](https://github.com/twingly/twingly-amqp/pull/107) ([vikiv480](https://github.com/vikiv480))
+
 ## [v6.2.0](https://github.com/twingly/twingly-amqp/tree/v6.2.0) (2025-07-15)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.1.0...v6.2.0)
