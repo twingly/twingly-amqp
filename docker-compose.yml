@@ -1,6 +1,6 @@
 services:
   rabbitmq:
-    image: rabbitmq:4.2
+    image: rabbitmq:4.3
     ports:
       - 5672:5672
     healthcheck:

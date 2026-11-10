@@ -40,12 +40,6 @@ describe Twingly::AMQP::Utilities do
           before { options[:durable] = false }
 
           it { expect { created_queue }.to raise_error(ArgumentError, "durable: false is not supported by quorum queues") }
-
-          context "when queue_type is :classic" do
-            before { options[:queue_type] = :classic }
-
-            it { is_expected.to be false }
-          end
         end
       end
 
