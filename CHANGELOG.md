@@ -1,5 +1,15 @@
 # Changelog
 
+## [v6.3.0](https://github.com/twingly/twingly-amqp/tree/v6.3.0) (2026-11-23)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.2.1...v6.3.0)
+
+**Merged pull requests:**
+
+- Stop `Subscription` when the server cancels the consumer [\#110](https://github.com/twingly/twingly-amqp/pull/110) ([vikiv480](https://github.com/vikiv480))
+- Update RabbitMQ to 4.3 and Ruby versions tested on CI [\#109](https://github.com/twingly/twingly-amqp/pull/109) ([vikiv480](https://github.com/vikiv480))
+- Update GitHub Actions [\#108](https://github.com/twingly/twingly-amqp/pull/108) ([roback](https://github.com/roback))
+
 ## [v6.2.1](https://github.com/twingly/twingly-amqp/tree/v6.2.1) (2025-07-16)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.2.0...v6.2.1)
