@@ -299,6 +299,62 @@ describe Twingly::AMQP::Subscription do
       end
     end
 
+    context "when the server cancels the consumer" do
+      let(:logger) { instance_double("Logger", warn: nil) }
+
+      before do
+        Twingly::AMQP.configure do |config|
+          config.logger = logger
+        end
+      end
+
+      after do
+        Twingly::AMQP.configure do |config|
+          config.logger = Twingly::AMQP::NullLogger.new
+        end
+      end
+
+      # Deleting the queue makes the server send basic.cancel to its consumers,
+      # just like a consumer timeout does on RabbitMQ 4.3+
+      def cancel_consumer_on_server
+        channel = amqp_connection.create_channel
+        channel.queue_delete(queue_name)
+        channel.close
+      end
+
+      context "when blocking is true" do
+        it "stops the subscription" do
+          exchange.publish(payload_json, routing_key: routing_key)
+          wait_for_messages_to_be_consumed
+
+          subject.each_message do |message|
+            message.ack
+            cancel_consumer_on_server
+          end
+
+          expect(subject.cancel?).to eq(true)
+        end
+      end
+
+      context "when blocking is false" do
+        it "stops the subscription" do
+          subject.each_message(blocking: false) { |_| }
+          cancel_consumer_on_server
+          sleep 0.5
+
+          expect(subject.cancel?).to eq(true)
+        end
+      end
+
+      it "logs a warning" do
+        subject.each_message(blocking: false) { |_| }
+        cancel_consumer_on_server
+        sleep 0.5
+
+        expect(logger).to have_received(:warn).with(/cancelled by the server/)
+      end
+    end
+
     context "without exchange_topic and routing_key" do
       let(:default_exchange) do
         channel = amqp_connection.create_channel
