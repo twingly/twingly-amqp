@@ -133,9 +133,18 @@ module Twingly
 
       def subscribe_options
         {
-          manual_ack:   true,
-          consumer_tag: consumer_tag,
+          manual_ack:      true,
+          consumer_tag:    consumer_tag,
+          on_cancellation: proc { handle_server_cancellation },
         }
+      end
+
+      # Called when the server cancels the consumer, e.g. on consumer timeout (RabbitMQ 4.3+)
+      def handle_server_cancellation
+        Twingly::AMQP.configuration.logger.warn(
+          "Consumer cancelled by the server, stopping subscription to #{@queue_name}"
+        )
+        @cancel = true
       end
 
       def consumer_tag
