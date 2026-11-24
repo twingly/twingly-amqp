@@ -39,10 +39,14 @@ module Twingly
 
       def each_message(blocking: true, &block)
         @blocking = blocking
+        Utilities.raise_if_connection_failed(@channel.connection)
         @consumer = create_consumer(&block)
 
         if @blocking
-          sleep 0.01 until cancel?
+          until cancel?
+            Utilities.raise_if_connection_failed(@channel.connection)
+            sleep 0.01
+          end
 
           @consumer.cancel
         end

@@ -13,6 +13,7 @@ module Twingly
 
         json_payload       = payload.to_json
         publishing_options = options.to_h.merge(opts)
+        Utilities.raise_if_connection_failed(@exchange.channel.connection)
         @exchange.publish(json_payload, publishing_options)
       end
 

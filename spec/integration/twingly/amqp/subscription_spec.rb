@@ -299,6 +299,66 @@ describe Twingly::AMQP::Subscription do
       end
     end
 
+    context "when the server closes the connection in the middle of a frame",
+            skip: !defined?(Bunny::ExceptionAccumulator) && "Bunny #{Bunny::VERSION} raises reader loop errors asynchronously" do
+      let(:connection) { Twingly::AMQP::Session.new(logger: Logger.new(File::NULL)).connection }
+      let(:subscription) { described_class.new(queue_name: queue_name, connection: connection) }
+      let(:other_subscription) { described_class.new(queue_name: queue_name, connection: connection) }
+      let(:publisher) do
+        Twingly::AMQP::DefaultExchangePublisher.new(queue_name: queue_name, connection: connection)
+      end
+      let(:framing_error) { /Frame payload should be 10 long/ }
+
+      before do
+        # Opens all channels and declares the queue before anything is stubbed
+        subscription
+        other_subscription
+        publisher
+
+        # Fail the first read after consume-ok, so each_message has reached its loop
+        consume_ok_handled = false
+        allow(connection).to receive(:handle_frame).and_wrap_original do |original, *args|
+          original.call(*args).tap do
+            consume_ok_handled = true if args.last.is_a?(AMQ::Protocol::Basic::ConsumeOk)
+          end
+        end
+        allow(connection.transport).to receive(:read_next_frame).and_wrap_original do |original, *args|
+          raise Bunny::BadLengthError.new(10, 5) if consume_ok_handled
+
+          original.call(*args)
+        end
+      end
+
+      after do
+        # The reader is dead, so skip the close handshakes and only stop Bunny's threads
+        connection.transport.close
+        connection.close
+      end
+
+      it "raises the error from each_message" do
+        expect { Timeout.timeout(3) { subscription.each_message { |_| } } }
+          .to raise_error(Bunny::NetworkFailure, framing_error)
+      end
+
+      context "after the connection has failed" do
+        before do
+          Timeout.timeout(3) { subscription.each_message { |_| } }
+        rescue Bunny::NetworkFailure
+          # Expected, the connection is dead now
+        end
+
+        it "raises the error when publishing" do
+          expect { publisher.publish(url: payload_url) }
+            .to raise_error(Bunny::NetworkFailure, framing_error)
+        end
+
+        it "raises the error when subscribing" do
+          expect { Timeout.timeout(1) { other_subscription.each_message(blocking: false) { |_| } } }
+            .to raise_error(Bunny::NetworkFailure, framing_error)
+        end
+      end
+    end
+
     context "when the server cancels the consumer" do
       let(:logger) { instance_double("Logger", warn: nil) }
 
