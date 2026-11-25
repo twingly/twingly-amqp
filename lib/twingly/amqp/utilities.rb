@@ -16,6 +16,19 @@ module Twingly
           end
         end
       end
+
+      # Bunny 3 stores errors that stop its reader loop instead of raising them, so a dead
+      # connection still looks open. The error is left in place so every caller fails, and a
+      # copy is raised so each one gets its own backtrace.
+      def self.raise_if_connection_failed(connection)
+        return unless defined?(Bunny::ExceptionAccumulator) && connection.respond_to?(:session_error_handler)
+
+        handler = connection.session_error_handler
+        return unless handler.is_a?(Bunny::ExceptionAccumulator)
+
+        error = handler.all.first
+        raise error.dup if error
+      end
     end
   end
 end
