@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.4.0](https://github.com/twingly/twingly-amqp/tree/v6.4.0) (2026-11-25)
+
+[Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.3.0...v6.4.0)
+
+**Merged pull requests:**
+
+- Raise stored connection errors in `Subscription` and publishers [\#112](https://github.com/twingly/twingly-amqp/pull/112) ([vikiv480](https://github.com/vikiv480))
+
 ## [v6.3.0](https://github.com/twingly/twingly-amqp/tree/v6.3.0) (2026-11-23)
 
 [Full Changelog](https://github.com/twingly/twingly-amqp/compare/v6.2.1...v6.3.0)
